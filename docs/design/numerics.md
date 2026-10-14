@@ -63,3 +63,45 @@ has a one-second warmup and a one-second integer-cycle observation interval;
 cosine excites the Nyquist endpoint, unlike a sampled sine. The relative gain
 squared tolerance is `1e-8`. Independent silent/driven states and newly allocated
 states also check that filter histories cannot leak between channels or streams.
+
+## True-peak public contract
+
+Public tests compute direct zero-padded finite convolution on the submitted PCM,
+using integer FIR tap numerators over 8192 rather than reproducing the production
+ring buffer. Every output position is evaluated, including the first eleven
+frames and all eleven trailing zero frames. The finalized reference is the
+maximum of the FIR magnitudes and the original sample magnitudes. The live
+getter is only the running FIR estimate and can be below sample peak before
+finalization. The oracle uses the existing four-phase coefficient design; it is
+not a claim of continuous-time reconstruction or official true-peak certification.
+
+Short streams of lengths 0 through 24 check startup and tail behavior, with the
+two-sample `[-0.5, -0.5]` fixture requiring an exact finalized peak of
+0.6224365234375. Positive and negative isolated impulses at every position in
+a 25-frame stream check the maximum-sample floor. A sign-aligned 11-frame suffix
+checks a tail-only maximum above both the live estimate and unity. Finalization
+must not increment the accepted PCM frame/sample counters or flush twice.
+
+Across mono, stereo and 5.0, strides 1, 2, 5, 11, 12, 13 and 31 include empty
+chunks and compare every submitted prefix to the direct-convolution live oracle.
+The final peak, overall/channel sample peaks and accepted counters are invariant
+to chunk partitioning. Explicit leading/trailing zero padding also leaves the
+final peak unchanged. Reset clears interpolation history, maxima and cached
+reports for every layout without mutating an already returned report.
+
+These fixtures use dyadic PCM and coefficients, keeping the finite convolution
+exactly representable and permitting equality assertions rather than snapshots.
+They depend on the separately supplied parent FIR startup correction (original
+parent commit `12842f4`), which evaluates the initially zero-filled delay line
+on every input frame. That correction is integration baseline, not a change
+made in this numerical worker's peak-test commit.
+
+## Validation commands
+
+For every coherent change, run `moon fmt`,
+`moon check --target wasm-gc --deny-warn`, and
+`moon test --target wasm-gc --deny-warn`. Formatting can rewrite checkout line
+endings in otherwise untouched files; those out-of-scope formatter-only writes
+are restored before validation/commit. Public interface generation is checked
+with `moon info --target wasm-gc`; `pkg.generated.mbti` must remain unchanged.
+No snapshots or production filter/FIR constants are updated by these tests.
