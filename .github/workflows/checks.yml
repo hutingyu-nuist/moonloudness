@@ -3,49 +3,52 @@ name: MoonBit checks
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    name: strict-${{ matrix.target }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [wasm-gc, wasm, js, native]
+    env:
+      MOONBIT_INSTALL_DEV: '1'
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up MoonBit
-        uses: hustcer/setup-moonbit@v1
-      - name: Show toolchain
-        run: moon version --all
-      - name: Refresh and validate generated interfaces
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up pinned MoonBit compiler and core
+        uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76 # v1
+        with:
+          version: '0.10.14+7d59c7ec9'
+          core-version: '0.10.14+7d59c7ec9'
+      - name: Show toolchain and native compiler
+        run: |
+          moon version --all
+          cc --version
+      - name: Validate generated interfaces and formatting
         run: |
           moon info
           git diff --exit-code -- '*.mbti'
-      - name: Formatting
-        run: moon fmt --check
-      - name: Check JavaScript target
-        run: moon check --deny-warn --target js
-      - name: Check WebAssembly GC target
-        run: moon check --deny-warn --target wasm-gc
-      - name: Check WebAssembly target
-        run: moon check --deny-warn --target wasm
-      - name: Build WebAssembly release
-        run: moon build --deny-warn --release --target wasm
-      - name: Test WebAssembly target
-        run: moon test --deny-warn --target wasm
-      - name: Build WebAssembly GC release
-        run: moon build --deny-warn --release --target wasm-gc
-      - name: Test JavaScript target
-        run: moon test --deny-warn --target js
-      - name: Test WebAssembly GC target
-        run: moon test --deny-warn --target wasm-gc
-      - name: Build native release
-        run: moon build --deny-warn --release --target native
-      - name: Test native target
-        run: moon test --deny-warn --target native
-      - name: Run examples
+          moon fmt --check
+      - name: Strict target check, release build and tests
         run: |
-          moon run examples/mono --target wasm-gc
-          moon run examples/stereo --target wasm-gc
-          moon run examples/surround --target wasm-gc
+          moon check --deny-warn --target ${{ matrix.target }}
+          moon build --deny-warn --release --target ${{ matrix.target }}
+          moon test --deny-warn --target ${{ matrix.target }}
+          moon test --deny-warn --release --target ${{ matrix.target }}
+      - name: Run downstream workflows
+        run: |
+          moon run examples/mono --target ${{ matrix.target }}
+          moon run examples/stereo --target ${{ matrix.target }}
+          moon run examples/surround --target ${{ matrix.target }}
