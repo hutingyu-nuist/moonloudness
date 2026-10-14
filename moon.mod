@@ -1,6 +1,6 @@
 name = "hutingyu-nuist/moonloudness"
 
-version = "0.1.0"
+version = "0.1.1"
 
 readme = "README.md"
 
@@ -10,4 +10,4 @@ license = "MIT"
 
 keywords = [ "audio", "loudness", "ebu-r128", "bs1770", "dsp" ]
 
-description = "Streaming EBU-style loudness and peak analysis for interleaved PCM in MoonBit"
+description = "纯 MoonBit 的交错 PCM 流式响度与峰值分析库"
