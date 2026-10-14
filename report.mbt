@@ -179,7 +179,6 @@ pub fn Analyzer::reset(self : Analyzer) -> Unit {
     self.true_peak_ring.push(new_zero_ring(12))
   }
   self.true_peak_cursor = 0
-  self.true_peak_frames = 0
   self.true_peak_max = 0.0
   self.sample_count = 0
   self.frame_count = 0

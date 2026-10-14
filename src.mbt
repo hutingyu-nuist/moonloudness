@@ -189,7 +189,6 @@ pub struct Analyzer {
   priv peak_coefficients : Array[Array[Double]]
   priv mut true_peak_ring : Array[Array[Double]]
   priv mut true_peak_cursor : Int
-  priv mut true_peak_frames : Int
   priv mut true_peak_max : Double
   priv mut sample_count : Int
   priv mut frame_count : Int
@@ -240,7 +239,6 @@ fn Analyzer::new_internal(
     peak_coefficients: true_peak_coefficients(),
     true_peak_ring: peak_ring,
     true_peak_cursor: 0,
-    true_peak_frames: 0,
     true_peak_max: 0.0,
     sample_count: 0,
     frame_count: 0,
@@ -336,21 +334,19 @@ fn Analyzer::push_true_peak_frame(
       0.0
     }
   }
-  self.true_peak_frames = self.true_peak_frames + 1
-  if self.true_peak_frames >= 12 {
-    for channel in 0..<channels {
-      for phase in 0..<4 {
-        let mut interpolated = 0.0
-        for tap in 0..<12 {
-          let ring_index = (self.true_peak_cursor + 1 + tap) % 12
-          interpolated = interpolated +
-            self.true_peak_ring[channel][ring_index] *
-            self.peak_coefficients[phase][tap]
-        }
-        let magnitude = abs_value(interpolated)
-        if magnitude > self.true_peak_max {
-          self.true_peak_max = magnitude
-        }
+  // The zero-initialized ring supplies startup padding: evaluate every frame.
+  for channel in 0..<channels {
+    for phase in 0..<4 {
+      let mut interpolated = 0.0
+      for tap in 0..<12 {
+        let ring_index = (self.true_peak_cursor + 1 + tap) % 12
+        interpolated = interpolated +
+          self.true_peak_ring[channel][ring_index] *
+          self.peak_coefficients[phase][tap]
+      }
+      let magnitude = abs_value(interpolated)
+      if magnitude > self.true_peak_max {
+        self.true_peak_max = magnitude
       }
     }
   }

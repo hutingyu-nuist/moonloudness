@@ -23,7 +23,7 @@ test "true_peak_fir_tail_flush_is_chunk_boundary_independent" {
     Ok(_) => ()
     Err(_) => panic()
   }
-  assert_eq(contiguous.true_peak_linear(), 0.0)
+  assert_true(contiguous.true_peak_linear() >= 0.5)
 
   let partitioned = @moonloudness.Analyzer::new(true_peak_test_mono_config())
   let mut start = 0
@@ -38,7 +38,7 @@ test "true_peak_fir_tail_flush_is_chunk_boundary_independent" {
     }
     start = end
   }
-  assert_eq(partitioned.true_peak_linear(), 0.0)
+  assert_true(partitioned.true_peak_linear() >= 0.5)
 
   let contiguous_report = contiguous.finish()
   let partitioned_report = partitioned.finish()
@@ -70,4 +70,18 @@ test "true_peak_reset_clears_previous_stream_peak" {
   let reset_report = analyzer.finish()
   assert_eq(reset_report.sample_peak_linear(), 0.125)
   assert_eq(reset_report.true_peak_linear(), 0.125)
+}
+
+///|
+test "startup FIR peaks agree with leading zero padding" {
+  let a = @moonloudness.Analyzer::new(true_peak_test_mono_config())
+  let b = @moonloudness.Analyzer::new(true_peak_test_mono_config())
+  assert_true(a.push([-0.5, -0.5]) is Ok(_))
+  assert_true(
+    b.push([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5, -0.5])
+    is Ok(_),
+  )
+  let peak = a.finish().true_peak_linear()
+  assert_eq(peak, b.finish().true_peak_linear())
+  assert_eq(peak, 0.6224365234375)
 }
