@@ -260,6 +260,16 @@ pub fn Analyzer::push(
   self : Analyzer,
   samples : Array[Double],
 ) -> Result[Unit, MeterError] {
+  self.push_view(samples[:])
+}
+
+///|
+/// Consumes a borrowed PCM view synchronously without copying or retaining it.
+/// Validation remains atomic; the caller must not mutate the view during this call.
+pub fn Analyzer::push_view(
+  self : Analyzer,
+  samples : ArrayView[Double],
+) -> Result[Unit, MeterError] {
   if self.finished {
     return Err(AnalyzerFinished)
   }
@@ -322,7 +332,7 @@ fn abs_value(value : Double) -> Double {
 /// Adds one frame to the FIR delay line and evaluates its four interpolation phases.
 fn Analyzer::push_true_peak_frame(
   self : Analyzer,
-  samples : Array[Double],
+  samples : ArrayView[Double],
   offset : Int,
   has_input : Bool,
 ) -> Unit {

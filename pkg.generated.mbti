@@ -50,6 +50,7 @@ pub fn Analyzer::momentary_lufs(Self) -> Double?
 pub fn Analyzer::new(MeterConfig) -> Self
 pub fn Analyzer::new_with_history_capacity(MeterConfig, Int) -> Result[Self, MeterError]
 pub fn Analyzer::push(Self, Array[Double]) -> Result[Unit, MeterError]
+pub fn Analyzer::push_view(Self, ArrayView[Double]) -> Result[Unit, MeterError]
 pub fn Analyzer::reset(Self) -> Unit
 pub fn Analyzer::sample_count(Self) -> Int
 pub fn Analyzer::sample_peak_linear(Self) -> Double

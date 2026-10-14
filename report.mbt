@@ -125,7 +125,7 @@ pub fn Analyzer::finish(self : Analyzer) -> MeasurementReport {
     Some(report) => report
     None => {
       for _ in 0..<11 {
-        self.push_true_peak_frame([], 0, false)
+        self.push_true_peak_frame([][:], 0, false)
       }
       if self.sample_peak > self.true_peak_max {
         self.true_peak_max = self.sample_peak

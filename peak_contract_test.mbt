@@ -56,14 +56,11 @@ fn peak_contract_reference(
       }
     }
   }
-  // Finalized true peak must never be less than the maximum original sample.
-  // The live getter is the raw FIR estimate and need not satisfy this floor.
-  if finalized {
-    for sample in samples {
-      let magnitude = peak_contract_abs(sample)
-      if magnitude > peak {
-        peak = magnitude
-      }
+  // Live and finalized estimates include the original sample-peak floor.
+  for sample in samples {
+    let magnitude = peak_contract_abs(sample)
+    if magnitude > peak {
+      peak = magnitude
     }
   }
   peak
