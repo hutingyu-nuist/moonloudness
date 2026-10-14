@@ -130,9 +130,12 @@ pub fn Analyzer::finish(self : Analyzer) -> MeasurementReport {
       if self.sample_peak > self.true_peak_max {
         self.true_peak_max = self.sample_peak
       }
-      if self.frame_count > 0 &&
-        self.history.last_frame_count() != Some(self.frame_count) {
-        self.record_snapshot()
+      if self.frame_count > 0 {
+        if self.history.last_frame_count() == Some(self.frame_count) {
+          self.history.replace_last(self.snapshot())
+        } else {
+          self.record_snapshot()
+        }
       }
       let integrated_gate = self.calculate_integrated_gate()
       let lra_gate = self.calculate_lra_gate()

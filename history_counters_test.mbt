@@ -29,3 +29,27 @@ test "history counters are coherent throughout a large push" {
     }
   }
 }
+
+///|
+test "finish refreshes existing boundary point after peak tail flush" {
+  let m = @moonloudness.Analyzer::new(
+    history_config(@moonloudness.ChannelLayout::mono()),
+  )
+  let xs : Array[Double] = []
+  for _ in 0..<19189 {
+    xs.push(0.0)
+  }
+  for x in [-0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5] {
+    xs.push(x)
+  }
+  assert_true(m.push(xs) is Ok(_))
+  let before = m.history()[0].true_peak_linear()
+  let r = m.finish()
+  let after = m.history()
+  assert_eq(after.length(), 1)
+  assert_true(r.true_peak_linear() > before)
+  assert_eq(after[0].true_peak_linear(), r.true_peak_linear())
+  assert_eq(after[0].frame_count(), r.frame_count())
+  let _ = m.finish()
+  assert_eq(m.history().length(), 1)
+}

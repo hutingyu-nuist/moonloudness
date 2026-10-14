@@ -182,3 +182,15 @@ pub fn MeterSnapshot::sample_peak_dbfs(self : MeterSnapshot) -> Double? {
 pub fn MeterSnapshot::true_peak_dbtp(self : MeterSnapshot) -> Double? {
   amplitude_to_db(self.true_peak_linear)
 }
+
+///|
+// Replace a terminal point after FIR tail flushing without adding a second timestamp.
+fn MeasurementHistory::replace_last(
+  self : MeasurementHistory,
+  point : MeterSnapshot,
+) -> Unit {
+  if self.count > 0 {
+    let index = (self.next + self.capacity - 1) % self.capacity
+    self.values[index] = point
+  }
+}
