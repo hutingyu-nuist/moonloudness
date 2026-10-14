@@ -92,6 +92,8 @@ pub struct AggregateReport {
   priv sample_rate : Int
   priv asset_count : Int
   priv frame_count : Int
+  priv integrated_status : GateStatus
+  priv lra_status : GateStatus
   priv integrated_gate : IntegratedGateReport?
   priv lra_gate : LraGateReport?
   priv sample_peak_linear : Double
@@ -173,6 +175,8 @@ pub fn LoudnessAggregator::finish(self : LoudnessAggregator) -> AggregateReport 
     sample_rate: self.sample_rate,
     asset_count: self.asset_count,
     frame_count: self.frame_count,
+    integrated_status: self.integrated_status(),
+    lra_status: self.lra_status(),
     integrated_gate: integrated_gate_from_histogram(
       self.integrated_distribution,
     ),
@@ -247,6 +251,10 @@ fn validate_histogram_merge(
       return Err(AggregateCounterOverflow)
     }
   }
+  if source.above_range_count < 0 {
+    return Err(InvalidAggregateDistribution)
+  }
+  total = total + source.above_range_count.to_double()
   if total != source.total_count {
     return Err(InvalidAggregateDistribution)
   }

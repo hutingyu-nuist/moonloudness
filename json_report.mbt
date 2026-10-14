@@ -122,6 +122,10 @@ pub fn MeasurementReport::to_json(self : MeasurementReport) -> Json {
       "momentary_lufs": report_json_number(self.momentary_lufs()),
       "short_term_lufs": report_json_number(self.short_term_lufs()),
     }),
+    "availability": Json::object({
+      "integrated": self.integrated_status().as_json(),
+      "lra": self.lra_status().as_json(),
+    }),
     "gates": Json::object({
       "integrated": report_integrated_gate_json(self.integrated_gate()),
       "lra": report_lra_gate_json(self.lra_gate()),

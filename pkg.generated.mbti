@@ -18,8 +18,10 @@ pub fn AggregateReport::duration_seconds(Self) -> Double
 pub fn AggregateReport::frame_count(Self) -> Int
 pub fn AggregateReport::integrated_gate(Self) -> IntegratedGateReport?
 pub fn AggregateReport::integrated_lufs(Self) -> Double?
+pub fn AggregateReport::integrated_status(Self) -> GateStatus
 pub fn AggregateReport::loudness_range_lu(Self) -> Double?
 pub fn AggregateReport::lra_gate(Self) -> LraGateReport?
+pub fn AggregateReport::lra_status(Self) -> GateStatus
 pub fn AggregateReport::normalization_plan(Self, Double, Double) -> Result[NormalizationPlan, NormalizationPlanError]
 pub fn AggregateReport::sample_peak_dbfs(Self) -> Double?
 pub fn AggregateReport::sample_peak_linear(Self) -> Double
@@ -31,6 +33,9 @@ pub enum AggregationError {
   UnsupportedAggregateSampleRate(Int)
   ReportSampleRateMismatch(Int, Int)
   AggregateCounterOverflow
+  InvalidAggregateCounters
+  InvalidAggregateDistribution
+  InvalidAggregatePeak
 }
 
 pub struct Analyzer {
@@ -101,6 +106,7 @@ pub fn LoudnessAggregator::finish(Self) -> AggregateReport
 pub fn LoudnessAggregator::frame_count(Self) -> Int
 pub fn LoudnessAggregator::integrated_status(Self) -> GateStatus
 pub fn LoudnessAggregator::lra_status(Self) -> GateStatus
+pub fn LoudnessAggregator::merge(Self, Self) -> Result[Unit, AggregationError]
 pub fn LoudnessAggregator::new(Int) -> Result[Self, AggregationError]
 pub fn LoudnessAggregator::sample_rate(Self) -> Int
 
@@ -135,6 +141,7 @@ pub fn MeasurementReport::sample_peak_dbfs(Self) -> Double?
 pub fn MeasurementReport::sample_peak_linear(Self) -> Double
 pub fn MeasurementReport::sample_rate(Self) -> Int
 pub fn MeasurementReport::short_term_lufs(Self) -> Double?
+pub fn MeasurementReport::to_json(Self) -> Json
 pub fn MeasurementReport::true_peak_dbtp(Self) -> Double?
 pub fn MeasurementReport::true_peak_linear(Self) -> Double
 
@@ -174,6 +181,7 @@ pub struct NormalizationPlan {
   // private fields
 }
 pub fn NormalizationPlan::applied_gain_db(Self) -> Double
+pub fn NormalizationPlan::linear_gain(Self) -> Double
 pub fn NormalizationPlan::peak_constrained(Self) -> Bool
 pub fn NormalizationPlan::peak_limited_gain_db(Self) -> Double
 pub fn NormalizationPlan::predicted_integrated_lufs(Self) -> Double
@@ -186,6 +194,8 @@ pub enum NormalizationPlanError {
   MissingIntegratedLoudness
   InvalidTargetLufs(Double)
   InvalidTruePeakCeilingDbtp(Double)
+  InvalidMeasuredLevels
+  UnsafeNormalizationMath
 }
 
 // Type aliases

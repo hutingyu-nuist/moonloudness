@@ -61,3 +61,28 @@ pub extend GateStatus with Eq::{equal, not_equal}
 
 ///|
 pub extend GateStatus with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
+pub fn AggregateReport::integrated_status(self : AggregateReport) -> GateStatus {
+  self.integrated_status
+}
+
+///|
+pub fn AggregateReport::lra_status(self : AggregateReport) -> GateStatus {
+  self.lra_status
+}
+
+///|
+/// Versioned report exports encode availability separately from missing values.
+fn GateStatus::as_json(self : GateStatus) -> Json {
+  let (name, count) = match self {
+    WarmingUp => ("warming_up", 0)
+    BelowAbsoluteGate => ("below_absolute_gate", 0)
+    HistogramRangeExceeded(n) => ("histogram_range_exceeded", n)
+    Available => ("available", 0)
+  }
+  Json::object({
+    "status": Json::string(name),
+    "above_range_blocks": count.to_json(),
+  })
+}
