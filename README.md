@@ -4,7 +4,7 @@ MoonLoudness is a pure MoonBit library for streaming loudness and peak analysis 
 
 ## Install
 
-The module has not yet been published to MoonCakes. To inspect and run the source before publication:
+Module identity: **hutingyu-nuist/moonloudness@0.1.0**. Check exact-version public registry metadata for availability; a package build alone is not proof of publication. Source checkout is usable independently:
 
 ```sh
 git clone https://github.com/hutingyu-nuist/moonloudness.git
@@ -13,7 +13,7 @@ moon check --target wasm-gc
 moon test --target wasm-gc
 ```
 
-After the participant publishes the module, downstream MoonBit projects can add it with `moon add hutingyu-nuist/moonloudness`.
+For an available published version, downstream projects can add `hutingyu-nuist/moonloudness` with `moon add hutingyu-nuist/moonloudness`. Verify the resolved manifest version before relying on it. No MoonCakes credential is needed to consume a public package.
 
 ## Supported measurement path
 

@@ -1,6 +1,6 @@
 # Local engineering and delivery audit — 2026-10-14
 
-This public engineering record contains no application or credentials. It describes local readiness; real remote CI, Release and MoonCakes status must be checked from their public endpoints, not inferred from this file.
+This public engineering record contains no application or credentials. It describes verified local readiness and the first actual public CI run. Release and MoonCakes status must still be checked from their public endpoints, not inferred from this file.
 
 ## Topic and reuse
 
@@ -11,7 +11,7 @@ Retain MoonLoudness: decoded PCM -> bounded streaming K-weighted windows/gates/L
 - moon info then moon fmt; generated .mbti changes reviewed for the added APIs. moon fmt --check passes.
 - Strict moon check --deny-warn passes wasm-gc, wasm, js and native.
 - Each portable target's debug and release suites passes 67/67 tests. Each release build passes. Mono/stereo/surround/batch workflows execute on all three targets; reference executes in the independent differential controller.
-- Native build/tests were NOT run successfully locally: this Windows environment lacks the required C compiler. The Ubuntu CI matrix is responsible for native evidence.
+- Native build/tests were NOT run successfully locally: this Windows environment lacks the required C compiler. Actual Ubuntu 24.04 CI run [38513156907](https://github.com/hutingyu-nuist/moonloudness/actions/runs/38513156907), commit `a930cabd650f2318475eb348e620fe99cef15004`, supplies the missing native evidence: strict check, release build, debug and release tests (67/67 each) and four downstream examples all pass. All four backend jobs and the independent-reference job passed. This is Linux CI evidence, not a local Windows native run.
 - All 32 Python controller/audit tests pass (14 reference/batch tests plus 18 repository-audit tests).
 - Five original generated signals compared with FFmpeg 8.1: 60/60 metric comparisons pass declared engineering limits across three targets. source/results/environment/limits are recorded in docs/validation. No official EBU suite, standards certification or music-corpus coverage is claimed.
 - Fresh-process throughput: four independent 8 s programs, 1,536,000 frames / 1,920,000 channel samples; five launches per backend. Current wasm-gc median 0.432908 s on Windows, 20 logical CPUs. Includes PCM generation/runtime startup/JSON, excludes compilation; no isolated DSP speed claim.
