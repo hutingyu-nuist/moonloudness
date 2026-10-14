@@ -122,6 +122,9 @@ pub fn MeasurementReport::lra_gate(self : MeasurementReport) -> LraGateReport? {
 fn integrated_gate_from_histogram(
   histogram : LoudnessHistogram,
 ) -> IntegratedGateReport? {
+  if histogram.above_range_count > 0 {
+    return None
+  }
   match histogram.mean_energy_at_or_above(-70.0) {
     None => None
     Some(absolute_mean) => {

@@ -8,6 +8,7 @@ priv struct LoudnessHistogram {
   counts : Array[Double]
   energy_sums : Array[Double]
   mut total_count : Double
+  mut above_range_count : Int
 }
 
 ///|
@@ -34,7 +35,7 @@ fn LoudnessHistogram::new() -> LoudnessHistogram {
     counts.push(0.0)
     energy_sums.push(0.0)
   }
-  { counts, energy_sums, total_count: 0.0, }
+  { counts, energy_sums, total_count: 0.0, above_range_count: 0, }
 }
 
 ///|
@@ -61,10 +62,14 @@ fn LoudnessHistogram::push_energy(
   self : LoudnessHistogram,
   energy : Double,
 ) -> Unit {
+  self.total_count = self.total_count + 1.0
+  if energy_to_lufs(energy) > HISTOGRAM_MAX_LUFS {
+    self.above_range_count = self.above_range_count + 1
+    return
+  }
   let bucket = self.bucket_for_energy(energy)
   self.counts[bucket] = self.counts[bucket] + 1.0
   self.energy_sums[bucket] = self.energy_sums[bucket] + energy
-  self.total_count = self.total_count + 1.0
 }
 
 ///|
@@ -163,6 +168,7 @@ fn LoudnessHistogram::clear(self : LoudnessHistogram) -> Unit {
     self.energy_sums[bucket] = 0.0
   }
   self.total_count = 0.0
+  self.above_range_count = 0
 }
 
 ///|
@@ -174,7 +180,12 @@ fn LoudnessHistogram::clone(self : LoudnessHistogram) -> LoudnessHistogram {
     counts.push(self.counts[bucket])
     energy_sums.push(self.energy_sums[bucket])
   }
-  { counts, energy_sums, total_count: self.total_count, }
+  {
+    counts,
+    energy_sums,
+    total_count: self.total_count,
+    above_range_count: self.above_range_count,
+  }
 }
 
 ///|
@@ -189,4 +200,5 @@ fn LoudnessHistogram::merge(
       other.energy_sums[bucket]
   }
   self.total_count = self.total_count + other.total_count
+  self.above_range_count = self.above_range_count + other.above_range_count
 }

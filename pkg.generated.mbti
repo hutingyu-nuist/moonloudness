@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "hutingyu-nuist/moonloudness"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 
 // Errors
@@ -40,6 +44,8 @@ pub fn Analyzer::finish(Self) -> MeasurementReport
 pub fn Analyzer::frame_count(Self) -> Int
 pub fn Analyzer::history(Self) -> Array[MeterSnapshot]
 pub fn Analyzer::history_capacity(Self) -> Int
+pub fn Analyzer::integrated_status(Self) -> GateStatus
+pub fn Analyzer::lra_status(Self) -> GateStatus
 pub fn Analyzer::momentary_lufs(Self) -> Double?
 pub fn Analyzer::new(MeterConfig) -> Self
 pub fn Analyzer::new_with_history_capacity(MeterConfig, Int) -> Result[Self, MeterError]
@@ -65,6 +71,16 @@ pub fn ChannelLayout::mono() -> Self
 pub fn ChannelLayout::stereo() -> Self
 pub fn ChannelLayout::supported() -> Array[Self]
 
+pub enum GateStatus {
+  WarmingUp
+  BelowAbsoluteGate
+  HistogramRangeExceeded(Int)
+  Available
+} derive(Eq, @debug.Debug)
+pub fn GateStatus::equal(Self, Self) -> Bool
+pub fn GateStatus::not_equal(Self, Self) -> Bool
+pub fn GateStatus::to_repr(Self) -> @debug.Repr
+
 pub struct IntegratedGateReport {
   // private fields
 }
@@ -82,6 +98,8 @@ pub fn LoudnessAggregator::add(Self, MeasurementReport) -> Result[Unit, Aggregat
 pub fn LoudnessAggregator::asset_count(Self) -> Int
 pub fn LoudnessAggregator::finish(Self) -> AggregateReport
 pub fn LoudnessAggregator::frame_count(Self) -> Int
+pub fn LoudnessAggregator::integrated_status(Self) -> GateStatus
+pub fn LoudnessAggregator::lra_status(Self) -> GateStatus
 pub fn LoudnessAggregator::new(Int) -> Result[Self, AggregationError]
 pub fn LoudnessAggregator::sample_rate(Self) -> Int
 
@@ -106,8 +124,10 @@ pub fn MeasurementReport::duration_seconds(Self) -> Double
 pub fn MeasurementReport::frame_count(Self) -> Int
 pub fn MeasurementReport::integrated_gate(Self) -> IntegratedGateReport?
 pub fn MeasurementReport::integrated_lufs(Self) -> Double?
+pub fn MeasurementReport::integrated_status(Self) -> GateStatus
 pub fn MeasurementReport::loudness_range_lu(Self) -> Double?
 pub fn MeasurementReport::lra_gate(Self) -> LraGateReport?
+pub fn MeasurementReport::lra_status(Self) -> GateStatus
 pub fn MeasurementReport::momentary_lufs(Self) -> Double?
 pub fn MeasurementReport::normalization_plan(Self, Double, Double) -> Result[NormalizationPlan, NormalizationPlanError]
 pub fn MeasurementReport::sample_peak_dbfs(Self) -> Double?

@@ -14,7 +14,7 @@ MoonLoudness is a streaming PCM measurement library. This document describes the
 
 1. Each channel has independent state for the 48 kHz K-weighting shelf and RLB high-pass biquads.
 2. Per-frame weighted squared energies feed fixed rolling windows: 19,200 frames (400 ms) for momentary loudness and 144,000 frames (3 s) for short-term loudness.
-3. Integrated-loudness candidates are sampled every 4,800 frames beginning at the first complete 400 ms window. Short-term LRA candidates are sampled every 48,000 frames beginning at 3 s.
+3. Integrated-loudness candidates are sampled every 4,800 frames beginning at the first complete 400 ms window. Short-term LRA candidates are sampled every 4,800 frames beginning at 3 s.
 4. Integrated loudness applies a -70 LUFS absolute gate and a relative gate 10 LU below the absolute-gated mean. LRA applies a -70 LUFS absolute gate and a relative gate 20 LU below its absolute-gated mean, then reports the 10th-to-95th percentile range.
 5. Sample peak tracks the largest absolute input sample overall and per channel. True peak uses the 12-tap, four-phase FIR coefficients published in ITU-R BS.1770-5 Annex 2 and flushes the tail on `finish`.
 
@@ -37,3 +37,7 @@ No decoder, WAV/OGG/container I/O, sample-rate conversion, generic channel masks
 Tests use deterministic synthetic signals and cover input atomicity, window timing, chunk partition invariance, channel weights/peaks, report finalization/reset, history bounds, aggregation, silence, and peak-constrained gain advice. They do not include licensed EBU fixtures or claim an official conformance pass.
 
 At the current implementation snapshot, the library package has 1,654 physical non-test `.mbt` lines, including blank and documentation lines. The documented count excludes tests, examples, generated interfaces, and build output.
+
+## Histogram range diagnostics
+
+Finite PCM outside full scale remains valid for peak/headroom analysis, but the bounded loudness histogram represents candidates only up to +24 LUFS. Any candidate above this range invalidates the corresponding integrated or LRA gate for the program (and any aggregate containing it), rather than silently clamping the reported percentiles. GateStatus distinguishes warming-up, below-absolute-gate, available, and HistogramRangeExceeded(block_count). Momentary/short-term values and peaks remain available; reset clears the diagnostic. The 0.01 LU bucket resolution applies only to in-range candidates and percentile locations; it does not bound the error introduced by near-threshold gate membership.
