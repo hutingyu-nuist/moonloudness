@@ -1,6 +1,6 @@
 # FFmpeg ebur128 differential measurement
 
-- UTC run: 2026-10-14T04:17:20.300774+00:00
+- UTC run: 2026-10-14T04:29:39.286680+00:00
 - Platform: Windows-10-10.0.26100-SP0
 - Python: 3.8.5 (tags/v3.8.5:580fbb0, Jul 20 2020, 15:43:08) [MSC v.1926 32 bit (Intel)]
 - Moon executable: `C:\Users\42673\.moon-dev\bin\moon.exe`

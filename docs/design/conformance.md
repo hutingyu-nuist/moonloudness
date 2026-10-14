@@ -6,7 +6,7 @@ MoonLoudness is a streaming PCM measurement library. This document describes the
 
 - Sample rate: exactly 48,000 Hz; the exposed K-weighting coefficient set is for this rate.
 - Channel layouts: mono `C`, stereo `L,R`, and 5.0 `L,R,C,Ls,Rs`. Surround channels use the 1.41 loudness multiplier. No LFE channel is accepted.
-- `Analyzer::push` takes a complete chunk of interleaved `Array[Double]` frames. Frame shape, finite values, numeric magnitude, and counter capacity are checked before any analyzer mutation.
+- `Analyzer::push` takes a complete chunk of interleaved `Array[Double]` frames; `push_view` borrows an `ArrayView[Double]` synchronously without copying or retaining a reference. Frame shape, finite values, numeric magnitude, and counter capacity are checked before any analyzer mutation.
 - Finite headroom samples beyond `[-1,1]` are retained through absolute magnitude `1e150`; larger values are rejected to keep filter/energy arithmetic finite. The analyzer does not clip, normalize, or modify input samples.
 - `finish` flushes the FIR delay line and is idempotent. `reset` reuses the same configuration and clears measurement/history state.
 
@@ -20,7 +20,7 @@ MoonLoudness is a streaming PCM measurement library. This document describes the
 
 ## Bounded storage and quantization
 
-Rolling windows use fixed arrays. Integrated and short-term candidate energies are accumulated into fixed histograms covering -120 to +24 LUFS at 0.01 LU bucket width; memory use therefore does not grow with program duration. The gate lookup rounds a threshold upward to a bucket edge, while percentiles are reported at bucket edges. This is an explicit approximation, bounded by histogram resolution; it is not equivalent to retaining every original block for exact arbitrary-threshold comparisons.
+Rolling windows use fixed arrays and a pairwise energy sum tree (O(log window capacity) work per update), avoiding subtractive cancellation when a large transient leaves a window. Integrated and short-term candidate energies are accumulated into fixed histograms covering -120 to +24 LUFS at 0.01 LU bucket width; memory use therefore does not grow with program duration. The gate lookup rounds a threshold upward to a bucket edge, while percentiles are reported at bucket edges. This is an explicit approximation; bucket resolution bounds percentile placement, not the effect of near-threshold gate membership. It is not equivalent to retaining every original block for exact arbitrary-threshold comparisons.
 
 The default history retains 600 points, with one point per 100 ms after the first complete momentary window. Callers may choose 0 to 100,000 points. `history()` returns a detached chronological array; `snapshot()` provides current values without retaining another point. `LoudnessAggregator` merges the bounded candidate histograms from finalized reports, so independent programs can be summarized without concatenating PCM or retaining every report. Rolling-window/filter state is never joined across those program boundaries.
 
@@ -36,7 +36,7 @@ No decoder, WAV/OGG/container I/O, sample-rate conversion, generic channel masks
 
 Tests use deterministic synthetic signals and cover input atomicity, window timing, chunk partition invariance, channel weights/peaks, report finalization/reset, history bounds, aggregation, silence, and peak-constrained gain advice. They do not include licensed EBU fixtures or claim an official conformance pass.
 
-At the current implementation snapshot, the library package has 1,654 physical non-test `.mbt` lines, including blank and documentation lines. The documented count excludes tests, examples, generated interfaces, and build output.
+Run `python tools/audit_delivery.py --strict` for conservative substantive production lines and history checks. Tests (including inline test blocks), examples, comments, blank lines, generated interfaces, and build output are excluded. The independent five-fixture FFmpeg comparison and repeatable batch measurements are documented in `docs/validation/`; neither is certification.
 
 ## Histogram range diagnostics
 
@@ -45,3 +45,9 @@ Finite PCM outside full scale remains valid for peak/headroom analysis, but the 
 ## Stream lifetime and atomic errors
 
 Frame and interleaved-sample counters use signed 32-bit Int. At 48 kHz the sample limit bounds one analyzer session to about 12.43 hours mono, 6.21 hours stereo, or 2.49 hours 5.0. Split genuinely independent programs or reset deliberately before this limit; reset loses the previous program's filters and gates, so it is not transparent continuous-program continuation. Whole-chunk preflight prevents partial acceptance on incomplete frames, NaN/Infinity, counter overflow, or excessive magnitude. The FIR tail has no incrementing lifetime counter and finish cannot overflow accepted input counters. Tests simulate the counter boundary without allocating a multi-hour fixture.
+
+## Gain estimates and report interchange
+
+A normalization plan reports fixed-gate predicted integrated loudness. Applying gain can change absolute-gate membership; callers must remeasure the resulting audio. `linear_gain()` validates finite conversion, while ceiling enforcement remains advisory, not limiting.
+
+`MeasurementReport::to_json()` returns a detached version-1 `moonloudness.measurement` JSON object with channel order/weights, metrics, gate traces and explicit availability states. Unavailable values are `null`, not invented zeros; clients must inspect status before a QC decision. Aggregate addition and merge validate whole inputs before mutating state. Independent program aggregation never joins filter/window state or replaces per-program QC.

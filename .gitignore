@@ -12,3 +12,6 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+# Python validation controllers
+__pycache__/
+*.pyc

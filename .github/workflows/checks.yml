@@ -52,3 +52,23 @@ jobs:
           moon run examples/mono --target ${{ matrix.target }}
           moon run examples/stereo --target ${{ matrix.target }}
           moon run examples/surround --target ${{ matrix.target }}
+          moon run examples/batch --target ${{ matrix.target }}
+
+  independent-reference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MOONBIT_INSTALL_DEV: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76
+        with:
+          version: '0.10.14+7d59c7ec9'
+          core-version: '0.10.14+7d59c7ec9'
+      - name: Install independent test tool
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Validate controllers, repository audit and independent PCM measurements
+        run: |
+          python3 -m unittest discover -s tools -p 'test_*.py' -v
+          python3 tools/audit_delivery.py --strict
+          python3 tools/validate_reference.py
