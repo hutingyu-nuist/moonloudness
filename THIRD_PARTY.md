@@ -11,3 +11,17 @@ MoonLoudness is an independently written MoonBit implementation. It does not cop
 ## License
 
 The MoonLoudness source is distributed under the MIT License in [`LICENSE`](LICENSE). No third-party runtime dependency is added beyond MoonBit core's math package. Numerical coefficients and algorithm descriptions are attributed to the standards above; this repository does not reproduce their prose or official conformance materials.
+
+## Optional independent validation tool
+
+`tools/validate_reference.py` optionally invokes a separately installed FFmpeg
+executable as an independent `ebur128` comparator. FFmpeg is by the FFmpeg
+project (<https://ffmpeg.org/>); its licensing depends on build options (LGPL
+2.1-or-later by default; GPL-enabled/version-3 builds select different terms; see
+<https://ffmpeg.org/legal.html> and the installed build's `ffmpeg -L`). The
+measured local Gyan full build reports GPL 3-or-later in `ffmpeg -L`; this
+project does not distribute it.
+No FFmpeg source, executable, coefficients, or reference fixtures are copied
+by this workflow. All new PCM fixtures are original deterministic formulas,
+generated temporarily outside the repository. This optional subprocess test
+dependency does not change the MoonLoudness library license or dependencies.

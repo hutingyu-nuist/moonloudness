@@ -1,0 +1,6 @@
+import {
+  "hutingyu-nuist/moonloudness",
+  "moonbitlang/core/math",
+}
+
+pkgtype(kind: "executable")
