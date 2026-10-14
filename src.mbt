@@ -408,7 +408,11 @@ pub fn Analyzer::short_term_lufs(self : Analyzer) -> Double? {
 ///|
 /// Returns the maximum Annex 2 four-phase FIR estimate in linear amplitude.
 pub fn Analyzer::true_peak_linear(self : Analyzer) -> Double {
-  self.true_peak_max
+  if self.sample_peak > self.true_peak_max {
+    self.sample_peak
+  } else {
+    self.true_peak_max
+  }
 }
 
 ///|

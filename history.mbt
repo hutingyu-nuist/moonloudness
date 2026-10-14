@@ -143,7 +143,7 @@ pub fn Analyzer::snapshot(self : Analyzer) -> MeterSnapshot {
     momentary_lufs: self.momentary_lufs(),
     short_term_lufs: self.short_term_lufs(),
     sample_peak_linear: self.sample_peak,
-    true_peak_linear: self.true_peak_max,
+    true_peak_linear: self.true_peak_linear(),
     channel_sample_peaks_linear: self.channel_sample_peaks_linear(),
   }
 }
