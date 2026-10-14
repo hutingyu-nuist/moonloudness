@@ -1,0 +1,51 @@
+name: MoonBit checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up MoonBit
+        uses: hustcer/setup-moonbit@v1
+      - name: Show toolchain
+        run: moon version --all
+      - name: Refresh and validate generated interfaces
+        run: |
+          moon info
+          git diff --exit-code -- '*.mbti'
+      - name: Formatting
+        run: moon fmt --check
+      - name: Check JavaScript target
+        run: moon check --deny-warn --target js
+      - name: Check WebAssembly GC target
+        run: moon check --deny-warn --target wasm-gc
+      - name: Check WebAssembly target
+        run: moon check --deny-warn --target wasm
+      - name: Build WebAssembly release
+        run: moon build --deny-warn --release --target wasm
+      - name: Test WebAssembly target
+        run: moon test --deny-warn --target wasm
+      - name: Build WebAssembly GC release
+        run: moon build --deny-warn --release --target wasm-gc
+      - name: Test JavaScript target
+        run: moon test --deny-warn --target js
+      - name: Test WebAssembly GC target
+        run: moon test --deny-warn --target wasm-gc
+      - name: Build native release
+        run: moon build --deny-warn --release --target native
+      - name: Test native target
+        run: moon test --deny-warn --target native
+      - name: Run examples
+        run: |
+          moon run examples/mono --target wasm-gc
+          moon run examples/stereo --target wasm-gc
+          moon run examples/surround --target wasm-gc

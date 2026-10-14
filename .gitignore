@@ -1,0 +1,14 @@
+# MoonBit build products
+_build/
+.mooncakes/
+
+# Coverage and test reports
+coverage/
+*.lcov
+*.profraw
+
+# Local editor/OS state
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

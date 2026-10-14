@@ -1,0 +1,172 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "hutingyu-nuist/moonloudness"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct AggregateReport {
+  // private fields
+}
+pub fn AggregateReport::asset_count(Self) -> Int
+pub fn AggregateReport::duration_seconds(Self) -> Double
+pub fn AggregateReport::frame_count(Self) -> Int
+pub fn AggregateReport::integrated_gate(Self) -> IntegratedGateReport?
+pub fn AggregateReport::integrated_lufs(Self) -> Double?
+pub fn AggregateReport::loudness_range_lu(Self) -> Double?
+pub fn AggregateReport::lra_gate(Self) -> LraGateReport?
+pub fn AggregateReport::normalization_plan(Self, Double, Double) -> Result[NormalizationPlan, NormalizationPlanError]
+pub fn AggregateReport::sample_peak_dbfs(Self) -> Double?
+pub fn AggregateReport::sample_peak_linear(Self) -> Double
+pub fn AggregateReport::sample_rate(Self) -> Int
+pub fn AggregateReport::true_peak_dbtp(Self) -> Double?
+pub fn AggregateReport::true_peak_linear(Self) -> Double
+
+pub enum AggregationError {
+  UnsupportedAggregateSampleRate(Int)
+  ReportSampleRateMismatch(Int, Int)
+  AggregateCounterOverflow
+}
+
+pub struct Analyzer {
+  // private fields
+}
+pub fn Analyzer::channel_sample_peak_linear(Self, Int) -> Double?
+pub fn Analyzer::channel_sample_peaks_linear(Self) -> Array[Double]
+pub fn Analyzer::clear_history(Self) -> Unit
+pub fn Analyzer::duration_seconds(Self) -> Double
+pub fn Analyzer::finish(Self) -> MeasurementReport
+pub fn Analyzer::frame_count(Self) -> Int
+pub fn Analyzer::history(Self) -> Array[MeterSnapshot]
+pub fn Analyzer::history_capacity(Self) -> Int
+pub fn Analyzer::momentary_lufs(Self) -> Double?
+pub fn Analyzer::new(MeterConfig) -> Self
+pub fn Analyzer::new_with_history_capacity(MeterConfig, Int) -> Result[Self, MeterError]
+pub fn Analyzer::push(Self, Array[Double]) -> Result[Unit, MeterError]
+pub fn Analyzer::reset(Self) -> Unit
+pub fn Analyzer::sample_count(Self) -> Int
+pub fn Analyzer::sample_peak_linear(Self) -> Double
+pub fn Analyzer::short_term_lufs(Self) -> Double?
+pub fn Analyzer::snapshot(Self) -> MeterSnapshot
+pub fn Analyzer::true_peak_linear(Self) -> Double
+
+pub enum ChannelLayout {
+  Mono
+  Stereo
+  FivePointZero
+}
+pub fn ChannelLayout::channel_label(Self, Int) -> String?
+pub fn ChannelLayout::channel_weight(Self, Int) -> Double?
+pub fn ChannelLayout::channels(Self) -> Int
+pub fn ChannelLayout::five_point_zero() -> Self
+pub fn ChannelLayout::index_of(Self, String) -> Int?
+pub fn ChannelLayout::mono() -> Self
+pub fn ChannelLayout::stereo() -> Self
+pub fn ChannelLayout::supported() -> Array[Self]
+
+pub struct IntegratedGateReport {
+  // private fields
+}
+pub fn IntegratedGateReport::absolute_threshold_lufs(Self) -> Double
+pub fn IntegratedGateReport::applied_threshold_lufs(Self) -> Double
+pub fn IntegratedGateReport::candidate_block_count(Self) -> Int
+pub fn IntegratedGateReport::gated_block_count(Self) -> Int
+pub fn IntegratedGateReport::integrated_lufs(Self) -> Double
+pub fn IntegratedGateReport::relative_threshold_lufs(Self) -> Double
+
+pub struct LoudnessAggregator {
+  // private fields
+}
+pub fn LoudnessAggregator::add(Self, MeasurementReport) -> Result[Unit, AggregationError]
+pub fn LoudnessAggregator::asset_count(Self) -> Int
+pub fn LoudnessAggregator::finish(Self) -> AggregateReport
+pub fn LoudnessAggregator::frame_count(Self) -> Int
+pub fn LoudnessAggregator::new(Int) -> Result[Self, AggregationError]
+pub fn LoudnessAggregator::sample_rate(Self) -> Int
+
+pub struct LraGateReport {
+  // private fields
+}
+pub fn LraGateReport::absolute_threshold_lufs(Self) -> Double
+pub fn LraGateReport::applied_threshold_lufs(Self) -> Double
+pub fn LraGateReport::candidate_block_count(Self) -> Int
+pub fn LraGateReport::gated_block_count(Self) -> Int
+pub fn LraGateReport::loudness_range_lu(Self) -> Double
+pub fn LraGateReport::percentile_10_lufs(Self) -> Double
+pub fn LraGateReport::percentile_95_lufs(Self) -> Double
+pub fn LraGateReport::relative_threshold_lufs(Self) -> Double
+
+pub struct MeasurementReport {
+  // private fields
+}
+pub fn MeasurementReport::channel_sample_peak_linear(Self, Int) -> Double?
+pub fn MeasurementReport::channel_sample_peaks_linear(Self) -> Array[Double]
+pub fn MeasurementReport::duration_seconds(Self) -> Double
+pub fn MeasurementReport::frame_count(Self) -> Int
+pub fn MeasurementReport::integrated_gate(Self) -> IntegratedGateReport?
+pub fn MeasurementReport::integrated_lufs(Self) -> Double?
+pub fn MeasurementReport::loudness_range_lu(Self) -> Double?
+pub fn MeasurementReport::lra_gate(Self) -> LraGateReport?
+pub fn MeasurementReport::momentary_lufs(Self) -> Double?
+pub fn MeasurementReport::normalization_plan(Self, Double, Double) -> Result[NormalizationPlan, NormalizationPlanError]
+pub fn MeasurementReport::sample_peak_dbfs(Self) -> Double?
+pub fn MeasurementReport::sample_peak_linear(Self) -> Double
+pub fn MeasurementReport::sample_rate(Self) -> Int
+pub fn MeasurementReport::short_term_lufs(Self) -> Double?
+pub fn MeasurementReport::true_peak_dbtp(Self) -> Double?
+pub fn MeasurementReport::true_peak_linear(Self) -> Double
+
+pub struct MeterConfig {
+  // private fields
+}
+pub fn MeterConfig::layout(Self) -> ChannelLayout
+pub fn MeterConfig::new(Int, ChannelLayout) -> Result[Self, MeterError]
+pub fn MeterConfig::sample_rate(Self) -> Int
+
+pub enum MeterError {
+  UnsupportedSampleRate(Int)
+  IncompleteFrame(Int, Int)
+  NonFiniteSample
+  SampleMagnitudeTooLarge(Double)
+  CounterOverflow
+  InvalidHistoryCapacity(Int)
+  AnalyzerFinished
+}
+
+pub struct MeterSnapshot {
+  // private fields
+}
+pub fn MeterSnapshot::channel_sample_peaks_linear(Self) -> Array[Double]
+pub fn MeterSnapshot::duration_seconds(Self) -> Double
+pub fn MeterSnapshot::frame_count(Self) -> Int
+pub fn MeterSnapshot::momentary_lufs(Self) -> Double?
+pub fn MeterSnapshot::sample_count(Self) -> Int
+pub fn MeterSnapshot::sample_peak_dbfs(Self) -> Double?
+pub fn MeterSnapshot::sample_peak_linear(Self) -> Double
+pub fn MeterSnapshot::sample_rate(Self) -> Int
+pub fn MeterSnapshot::short_term_lufs(Self) -> Double?
+pub fn MeterSnapshot::true_peak_dbtp(Self) -> Double?
+pub fn MeterSnapshot::true_peak_linear(Self) -> Double
+
+pub struct NormalizationPlan {
+  // private fields
+}
+pub fn NormalizationPlan::applied_gain_db(Self) -> Double
+pub fn NormalizationPlan::peak_constrained(Self) -> Bool
+pub fn NormalizationPlan::peak_limited_gain_db(Self) -> Double
+pub fn NormalizationPlan::predicted_integrated_lufs(Self) -> Double
+pub fn NormalizationPlan::predicted_true_peak_dbtp(Self) -> Double
+pub fn NormalizationPlan::requested_gain_db(Self) -> Double
+pub fn NormalizationPlan::target_lufs(Self) -> Double
+pub fn NormalizationPlan::true_peak_ceiling_dbtp(Self) -> Double
+
+pub enum NormalizationPlanError {
+  MissingIntegratedLoudness
+  InvalidTargetLufs(Double)
+  InvalidTruePeakCeilingDbtp(Double)
+}
+
+// Type aliases
+
+// Traits
