@@ -302,9 +302,9 @@ pub fn Analyzer::push(
       frame_energy = frame_energy + weighted * weighted * channel_weight
     }
     self.push_true_peak_frame(samples, offset, true)
+    self.sample_count = self.sample_count + channels
     self.record_frame_energy(frame_energy)
   }
-  self.sample_count = self.sample_count + samples.length()
   Ok(())
 }
 
