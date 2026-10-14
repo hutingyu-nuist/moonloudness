@@ -27,6 +27,8 @@ jobs:
       MOONBIT_INSTALL_DEV: '1'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
       - name: Set up pinned MoonBit compiler and core
         uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76 # v1
         with:
@@ -61,6 +63,8 @@ jobs:
       MOONBIT_INSTALL_DEV: '1'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
       - uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76
         with:
           version: '0.10.14+7d59c7ec9'
