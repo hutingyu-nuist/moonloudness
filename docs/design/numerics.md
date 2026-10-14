@@ -40,3 +40,26 @@ A separate oracle sorts the current ring smallest-first and re-sums on each
 comparison; mixed-scale rollover means agree to relative tolerance `1e-14`.
 The original implementation fails four of the initial five regressions,
 including a production mean of approximately -1693 instead of 0.25.
+
+## K-weighting validation
+
+The filter tests do not use the production processing functions as their
+expected-value oracle. A generic coefficient-polynomial recurrence constructs
+separate shelf and high-pass impulse sequences, then direct convolution checks
+512 samples of the cascade at absolute tolerance `2e-12`. Two leading impulse
+samples also have direct analytic assertions. The coefficients are the existing
+48 kHz design constants; these checks validate realization and state handling,
+not independent certification or derivation of those published constants.
+
+DC tests check the shelf's numerator/denominator coefficient sums (unity gain)
+and the high-pass's double zero at DC. A 0.25 constant step must settle to the
+predicted shelf output and zero high-pass/cascade output; every sample in the
+second half of a 24,000-frame run is checked.
+
+For 20, 60, 1,000, 10,000, 20,000 and 24,000 Hz, measured cascade output/input
+energy is compared against the analytic squared magnitude of
+`B(exp(-jw))/A(exp(-jw))` for both sections, multiplied together. Each cosine
+has a one-second warmup and a one-second integer-cycle observation interval;
+cosine excites the Nyquist endpoint, unlike a sampled sine. The relative gain
+squared tolerance is `1e-8`. Independent silent/driven states and newly allocated
+states also check that filter histories cannot leak between channels or streams.
