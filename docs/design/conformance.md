@@ -41,3 +41,7 @@ At the current implementation snapshot, the library package has 1,654 physical n
 ## Histogram range diagnostics
 
 Finite PCM outside full scale remains valid for peak/headroom analysis, but the bounded loudness histogram represents candidates only up to +24 LUFS. Any candidate above this range invalidates the corresponding integrated or LRA gate for the program (and any aggregate containing it), rather than silently clamping the reported percentiles. GateStatus distinguishes warming-up, below-absolute-gate, available, and HistogramRangeExceeded(block_count). Momentary/short-term values and peaks remain available; reset clears the diagnostic. The 0.01 LU bucket resolution applies only to in-range candidates and percentile locations; it does not bound the error introduced by near-threshold gate membership.
+
+## Stream lifetime and atomic errors
+
+Frame and interleaved-sample counters use signed 32-bit Int. At 48 kHz the sample limit bounds one analyzer session to about 12.43 hours mono, 6.21 hours stereo, or 2.49 hours 5.0. Split genuinely independent programs or reset deliberately before this limit; reset loses the previous program's filters and gates, so it is not transparent continuous-program continuation. Whole-chunk preflight prevents partial acceptance on incomplete frames, NaN/Infinity, counter overflow, or excessive magnitude. The FIR tail has no incrementing lifetime counter and finish cannot overflow accepted input counters. Tests simulate the counter boundary without allocating a multi-hour fixture.
