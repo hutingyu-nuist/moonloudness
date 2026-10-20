@@ -78,3 +78,14 @@ Terminfo 与 Cap’n Proto 分属不同问题域；它们只作为候选淘汰�
 反向检索 loudness、LUFS、BS.1770、R128、loudnorm、true peak、integrated gating、K-weighting；关键词检索只辅助定位，不替代流程/API/测试审查。永久注册表 reserved/completed 均视作保留；MoonPhone 的号码计划和 MoonCite 的 CSL 渲染流程不重合。保留 Terminfo 与 Cap'n Proto 直接重复的淘汰结果。
 
 接手结论：**在已记录检索范围内未发现成熟直接替代**。保留 MoonLoudness，不换题。不声称覆盖所有私有、未索引、未发布或未来版本；源码检查为定向审查，而非对每行程序形式化证明。
+
+## 2026-10-20 验收阶段语义复查补充
+
+保留此前三领域候选、淘汰原因与历史记录，不按名称是否重复作结论。本轮执行 11 个 `moon search` 查询（每项 limit 100），并检索 GitHub MoonBit 仓库、MoonCakes 精确版本与永久注册表；定向阅读近邻 README、API、源码和测试。受限或返回 403 的请求记为不可访问，不记作零结果。检索范围仍不能涵盖私有、未索引及未来版本。
+
+- **MoonVoice**：仓库 [`yabaobao070510/moonvoice`](https://github.com/yabaobao070510/moonvoice)，审阅树 `f0ecc993d0775612b4cfb8e8e329d242c246b213`，其清单声明 `yabaobao/moonvoice@0.1.0`。确实提供离线 K 加权、综合响度、LRA、采样峰值和 pyloudnorm 金标测试，不应概括为只有 MFCC。与本库测量数学高度相邻；其核心是全长 Audio/加权 PCM/离线块的语音分析前端。本库核心是有界分块输入、窗口预热与结束/不可用状态协议、流式 FIR 真峰值、可脱离所有权的有限历史，以及独立节目的分布聚合。长期媒体流无需保留整段 PCM，且可嵌入不需要语音特征的系统，构成独立库的必要性，而不只是在相邻项目上增添一个输出字段。未以包清单 404 推断成熟度。
+- **MoonCast**：FFmpeg `loudnorm` 两遍测量、导出和复测已经实现，是高度相邻的真实媒体流水线。它依赖外部解码/处理链；本库只接收已解码 PCM，以进程内测量 API 服务流水线、实时仪表和编辑器，不替代 MoonCast 的媒体处理工作流。
+- **mizchi/audio**：精确安装并审阅 `0.1.1` 包，源码仓库为 [`mizchi/audio-mpt`](https://github.com/mizchi/audio-mpt)。它实现游戏音频 mixer/voice/codecs/streaming/effects；不是完整的本库响度门控和独立节目分布聚合协议。旧错误仓库 URL 的 404 不作为不存在依据。
+- 延续检查 MoonSpectrum、hwlxmm/dsp、moondsp、MoonEcho、moon-certified、MoonPost 的实际能力，未将其中频谱、DSP 基元、音效或质检流程误作不存在。永久注册表全部 reserved/completed 项目继续保留，包括 MoonCite、MoonPhone；本轮不重新登记本项目指纹或改换选题。
+
+结论：**在已记录检索范围内未发现成熟直接替代**。保留现有项目与历史；MoonVoice、MoonCast 属高度相邻项目，后续版本仍需持续关注。详细检索证据与本地验收记录保存在仓库外，未上传私人申报书。

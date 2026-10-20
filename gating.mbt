@@ -156,6 +156,9 @@ fn integrated_gate_from_histogram(
 ///|
 /// Calculates EBU-style absolute and relative LRA gates and 10th/95th percentiles.
 fn lra_gate_from_histogram(histogram : LoudnessHistogram) -> LraGateReport? {
+  if histogram.above_range_count > 0 {
+    return None
+  }
   match histogram.mean_energy_at_or_above(-70.0) {
     None => None
     Some(absolute_mean) => {

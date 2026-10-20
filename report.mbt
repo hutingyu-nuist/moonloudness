@@ -51,7 +51,7 @@ pub fn MeasurementReport::sample_peak_linear(
 }
 
 ///|
-/// Returns the maximum four-phase FIR estimate after the FIR tail was flushed.
+/// Returns an independent array of the largest submitted sample magnitude per channel.
 pub fn MeasurementReport::channel_sample_peaks_linear(
   self : MeasurementReport,
 ) -> Array[Double] {
@@ -76,6 +76,7 @@ pub fn MeasurementReport::channel_sample_peak_linear(
 }
 
 ///|
+/// Returns the overall four-phase FIR estimate after flushing the interpolation tail.
 pub fn MeasurementReport::true_peak_linear(self : MeasurementReport) -> Double {
   self.true_peak_linear
 }

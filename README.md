@@ -4,13 +4,13 @@ MoonLoudness 是一个纯 MoonBit 的流式响度与峰值分析库，输入为�
 
 ## 安装
 
-模块：**hutingyu-nuist/moonloudness@0.1.1**。在下游 MoonBit 项目中添加依赖：
+模块：**hutingyu-nuist/moonloudness@0.1.2**。在下游 MoonBit 项目中添加依赖：
 
 ```sh
-moon add hutingyu-nuist/moonloudness
+moon add hutingyu-nuist/moonloudness@0.1.2
 ```
 
-无需 MoonCakes 凭据即可使用公开包。请检查依赖清单中实际解析的版本；打包成功不等于已经发布，精确版本的可用性以公开注册表为准。0.1.1 是中文文档补丁，测量算法与公共 API 不变。
+无需 MoonCakes 凭据即可使用公开包。请检查依赖清单中实际解析的版本；打包成功不等于已经发布，精确版本的可用性以公开注册表为准。0.1.2 修复混合正常／超量程短时块的 LRA 不可用语义，公共 API 不变。
 
 也可以直接运行源码：
 
@@ -92,7 +92,7 @@ moon test --deny-warn --target js
 moon build --release --target wasm-gc
 ```
 
-本地 `wasm-gc`、`wasm`、`js` 的 debug 与 release 测试均通过 **67/67**；`native` 的严格检查也通过，但本机 Windows 环境没有 native C 编译器。实际 native 构建、测试及示例由 Ubuntu CI 验证，不能将其视为本地 native 运行结果。保守源码和提交审计命令为 `python tools/audit_delivery.py --strict`：自动检查非空提交、不同源码树与作者，开发价值仍须人工审查。
+2026-10-20 对 0.1.2 修复树的本地验证：`wasm-gc`、`wasm`、`js`、`native` 的严格检查、release 构建、debug／release 测试均通过，每套 **76/76**，五个示例在四目标均可运行。Windows native 使用隔离目录中的 Zig 0.14.1 C 编译器，MinGW 头文件通过 `-D_CRT_RAND_S` 启用 `rand_s` 声明；没有修改 MoonBit runtime 或关闭警告。对应提交的 Ubuntu CI 仍须单独核验。保守源码和提交审计命令为 `python tools/audit_delivery.py --strict`：自动检查非空提交、不同源码树与作者，开发价值仍须人工审查。
 
 2026-10-14 的独立工程验证中，五组确定性合成信号、四项指标、三个可移植后端共 **60/60 次比较**通过预先声明的 FFmpeg 回归容差。该结果**不是标准认证**。见 [验证说明](docs/validation/README.md)、[实测结果](docs/validation/reference-results.md) 和 [批处理计时](docs/validation/batch-results.md)。计时包含进程启动和 PCM 生成，不是纯 DSP 运算耗时；仓库不分发外部音频测试资产。
 
