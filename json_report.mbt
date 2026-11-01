@@ -22,8 +22,8 @@ fn report_integrated_gate_json(gate : IntegratedGateReport?) -> Json {
         "applied_threshold_lufs": report_json_number(
           Some(gate.applied_threshold_lufs()),
         ),
-        "candidate_block_count": gate.candidate_block_count().to_json(),
-        "gated_block_count": gate.gated_block_count().to_json(),
+        "candidate_block_count": Json(gate.candidate_block_count()),
+        "gated_block_count": Json(gate.gated_block_count()),
         "integrated_lufs": report_json_number(Some(gate.integrated_lufs())),
       })
   }
@@ -44,8 +44,8 @@ fn report_lra_gate_json(gate : LraGateReport?) -> Json {
         "applied_threshold_lufs": report_json_number(
           Some(gate.applied_threshold_lufs()),
         ),
-        "candidate_block_count": gate.candidate_block_count().to_json(),
-        "gated_block_count": gate.gated_block_count().to_json(),
+        "candidate_block_count": Json(gate.candidate_block_count()),
+        "gated_block_count": Json(gate.gated_block_count()),
         "percentile_10_lufs": report_json_number(
           Some(gate.percentile_10_lufs()),
         ),
@@ -107,13 +107,13 @@ pub fn MeasurementReport::to_json(self : MeasurementReport) -> Json {
   }
   Json::object({
     "schema": Json::string("moonloudness.measurement"),
-    "schema_version": (1).to_json(),
-    "sample_rate_hz": self.sample_rate().to_json(),
-    "frame_count": self.frame_count().to_json(),
+    "schema_version": Json(1),
+    "sample_rate_hz": Json(self.sample_rate()),
+    "frame_count": Json(self.frame_count()),
     "duration_seconds": report_json_number(Some(self.duration_seconds())),
     "layout": Json::object({
       "name": name,
-      "channel_count": channel_peaks.length().to_json(),
+      "channel_count": Json(channel_peaks.length()),
       "channel_labels": Json::array(labels),
     }),
     "loudness": Json::object({

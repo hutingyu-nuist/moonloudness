@@ -9,7 +9,7 @@ fn review_properties_meter(
 }
 
 ///|
-fn review_properties_pcm(frames : Int, channels : Int) -> Array[Double] {
+fn review_properties_pcm(frames : Int32, channels : Int32) -> Array[Double] {
   Array::makei(frames * channels, fn(i) {
     let frame = i / channels
     let channel = i % channels

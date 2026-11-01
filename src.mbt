@@ -36,7 +36,7 @@ pub fn ChannelLayout::five_point_zero() -> ChannelLayout {
 /// Returns the canonical short name for a channel index in this layout.
 pub fn ChannelLayout::channel_label(
   self : ChannelLayout,
-  index : Int,
+  index : Int32,
 ) -> String? {
   match (self, index) {
     (Mono, 0) => Some("C")
@@ -55,7 +55,7 @@ pub fn ChannelLayout::channel_label(
 /// Returns the BS.1770 channel multiplier, or None for an invalid index.
 pub fn ChannelLayout::channel_weight(
   self : ChannelLayout,
-  index : Int,
+  index : Int32,
 ) -> Double? {
   match (self, index) {
     (Mono, 0) | (Stereo, 0) | (Stereo, 1) => Some(1.0)
@@ -67,7 +67,7 @@ pub fn ChannelLayout::channel_weight(
 
 ///|
 /// Finds the exact canonical channel label in a layout.
-pub fn ChannelLayout::index_of(self : ChannelLayout, label : String) -> Int? {
+pub fn ChannelLayout::index_of(self : ChannelLayout, label : String) -> Int32? {
   for index in 0..<self.channels() {
     if self.channel_label(index) == Some(label) {
       return Some(index)
@@ -78,7 +78,7 @@ pub fn ChannelLayout::index_of(self : ChannelLayout, label : String) -> Int? {
 
 ///|
 /// Returns the number of interleaved samples in one frame.
-pub fn ChannelLayout::channels(self : ChannelLayout) -> Int {
+pub fn ChannelLayout::channels(self : ChannelLayout) -> Int32 {
   match self {
     Mono => 1
     Stereo => 2
@@ -89,26 +89,26 @@ pub fn ChannelLayout::channels(self : ChannelLayout) -> Int {
 ///|
 /// Typed configuration and input errors.
 pub enum MeterError {
-  UnsupportedSampleRate(Int)
-  IncompleteFrame(Int, Int)
+  UnsupportedSampleRate(Int32)
+  IncompleteFrame(Int32, Int32)
   NonFiniteSample
   SampleMagnitudeTooLarge(Double)
   CounterOverflow
-  InvalidHistoryCapacity(Int)
+  InvalidHistoryCapacity(Int32)
   AnalyzerFinished
 }
 
 ///|
 /// Immutable configuration for one 48 kHz PCM stream.
 pub struct MeterConfig {
-  priv sample_rate : Int
+  priv sample_rate : Int32
   priv layout : ChannelLayout
 }
 
 ///|
 /// Creates a configuration. Only the published 48 kHz coefficient set is enabled.
 pub fn MeterConfig::new(
-  sample_rate : Int,
+  sample_rate : Int32,
   layout : ChannelLayout,
 ) -> Result[MeterConfig, MeterError] {
   if sample_rate != 48000 {
@@ -120,7 +120,7 @@ pub fn MeterConfig::new(
 
 ///|
 /// Returns the configured sample rate in samples per second.
-pub fn MeterConfig::sample_rate(self : MeterConfig) -> Int {
+pub fn MeterConfig::sample_rate(self : MeterConfig) -> Int32 {
   self.sample_rate
 }
 
@@ -142,7 +142,7 @@ fn new_filter_states(layout : ChannelLayout) -> Array[KWeightingState] {
 
 ///|
 /// Allocates a zero-initialized ring for one channel.
-fn new_zero_ring(length : Int) -> Array[Double] {
+fn new_zero_ring(length : Int32) -> Array[Double] {
   let ring : Array[Double] = []
   for _ in 0..<length {
     ring.push(0.0)
@@ -188,10 +188,10 @@ pub struct Analyzer {
   priv channel_sample_peaks : Array[Double]
   priv peak_coefficients : Array[Array[Double]]
   priv mut true_peak_ring : Array[Array[Double]]
-  priv mut true_peak_cursor : Int
+  priv mut true_peak_cursor : Int32
   priv mut true_peak_max : Double
-  priv mut sample_count : Int
-  priv mut frame_count : Int
+  priv mut sample_count : Int32
+  priv mut frame_count : Int32
   priv momentary_window : EnergyWindow
   priv short_window : EnergyWindow
   priv mut latest_momentary_energy : Double?
@@ -213,7 +213,7 @@ pub fn Analyzer::new(config : MeterConfig) -> Analyzer {
 /// Creates an analyzer with a bounded history capacity (zero disables retention).
 pub fn Analyzer::new_with_history_capacity(
   config : MeterConfig,
-  capacity : Int,
+  capacity : Int32,
 ) -> Result[Analyzer, MeterError] {
   if capacity < 0 || capacity > 100000 {
     Err(InvalidHistoryCapacity(capacity))
@@ -225,7 +225,7 @@ pub fn Analyzer::new_with_history_capacity(
 ///|
 fn Analyzer::new_internal(
   config : MeterConfig,
-  history_capacity : Int,
+  history_capacity : Int32,
 ) -> Analyzer {
   let peak_ring : Array[Array[Double]] = []
   for _ in 0..<config.layout.channels() {
@@ -333,7 +333,7 @@ fn abs_value(value : Double) -> Double {
 fn Analyzer::push_true_peak_frame(
   self : Analyzer,
   samples : ArrayView[Double],
-  offset : Int,
+  offset : Int32,
   has_input : Bool,
 ) -> Unit {
   let channels = self.config.layout.channels()
@@ -435,7 +435,7 @@ pub fn Analyzer::sample_peak_linear(self : Analyzer) -> Double {
 /// Returns one channel's maximum absolute input sample, or None for an invalid index.
 pub fn Analyzer::channel_sample_peak_linear(
   self : Analyzer,
-  channel : Int,
+  channel : Int32,
 ) -> Double? {
   if channel < 0 || channel >= self.channel_sample_peaks.length() {
     None
@@ -456,13 +456,13 @@ pub fn Analyzer::channel_sample_peaks_linear(self : Analyzer) -> Array[Double] {
 
 ///|
 /// Returns the number of accepted interleaved samples.
-pub fn Analyzer::sample_count(self : Analyzer) -> Int {
+pub fn Analyzer::sample_count(self : Analyzer) -> Int32 {
   self.sample_count
 }
 
 ///|
 /// Returns the number of accepted frames.
-pub fn Analyzer::frame_count(self : Analyzer) -> Int {
+pub fn Analyzer::frame_count(self : Analyzer) -> Int32 {
   self.frame_count
 }
 

@@ -1,8 +1,8 @@
 ///|
 /// Errors returned while combining finalized reports.
 pub enum AggregationError {
-  UnsupportedAggregateSampleRate(Int)
-  ReportSampleRateMismatch(Int, Int)
+  UnsupportedAggregateSampleRate(Int32)
+  ReportSampleRateMismatch(Int32, Int32)
   AggregateCounterOverflow
   InvalidAggregateCounters
   InvalidAggregateDistribution
@@ -12,19 +12,19 @@ pub enum AggregationError {
 ///|
 /// Fixed-memory accumulator for independently measured programs at one sample rate.
 pub struct LoudnessAggregator {
-  priv sample_rate : Int
+  priv sample_rate : Int32
   priv integrated_distribution : LoudnessHistogram
   priv short_distribution : LoudnessHistogram
   priv mut sample_peak_linear : Double
   priv mut true_peak_linear : Double
-  priv mut frame_count : Int
-  priv mut asset_count : Int
+  priv mut frame_count : Int32
+  priv mut asset_count : Int32
 }
 
 ///|
 /// Creates an accumulator compatible with the available coefficient set.
 pub fn LoudnessAggregator::new(
-  sample_rate : Int,
+  sample_rate : Int32,
 ) -> Result[LoudnessAggregator, AggregationError] {
   if sample_rate != 48000 {
     Err(UnsupportedAggregateSampleRate(sample_rate))
@@ -77,21 +77,21 @@ pub fn LoudnessAggregator::add(
 
 ///|
 /// Number of finalized reports accepted so far.
-pub fn LoudnessAggregator::asset_count(self : LoudnessAggregator) -> Int {
+pub fn LoudnessAggregator::asset_count(self : LoudnessAggregator) -> Int32 {
   self.asset_count
 }
 
 ///|
-pub fn LoudnessAggregator::frame_count(self : LoudnessAggregator) -> Int {
+pub fn LoudnessAggregator::frame_count(self : LoudnessAggregator) -> Int32 {
   self.frame_count
 }
 
 ///|
 /// Immutable combined result calculated over all accepted loudness blocks.
 pub struct AggregateReport {
-  priv sample_rate : Int
-  priv asset_count : Int
-  priv frame_count : Int
+  priv sample_rate : Int32
+  priv asset_count : Int32
+  priv frame_count : Int32
   priv integrated_status : GateStatus
   priv lra_status : GateStatus
   priv integrated_gate : IntegratedGateReport?
@@ -101,17 +101,17 @@ pub struct AggregateReport {
 }
 
 ///|
-pub fn AggregateReport::sample_rate(self : AggregateReport) -> Int {
+pub fn AggregateReport::sample_rate(self : AggregateReport) -> Int32 {
   self.sample_rate
 }
 
 ///|
-pub fn AggregateReport::asset_count(self : AggregateReport) -> Int {
+pub fn AggregateReport::asset_count(self : AggregateReport) -> Int32 {
   self.asset_count
 }
 
 ///|
-pub fn AggregateReport::frame_count(self : AggregateReport) -> Int {
+pub fn AggregateReport::frame_count(self : AggregateReport) -> Int32 {
   self.frame_count
 }
 
@@ -187,7 +187,7 @@ pub fn LoudnessAggregator::finish(self : LoudnessAggregator) -> AggregateReport 
 }
 
 ///|
-pub fn LoudnessAggregator::sample_rate(self : LoudnessAggregator) -> Int {
+pub fn LoudnessAggregator::sample_rate(self : LoudnessAggregator) -> Int32 {
   self.sample_rate
 }
 
@@ -196,8 +196,8 @@ pub fn LoudnessAggregator::sample_rate(self : LoudnessAggregator) -> Int {
 /// Counts stay within Int range because public gate reports expose Int counts.
 fn LoudnessAggregator::validate_addition(
   self : LoudnessAggregator,
-  frames : Int,
-  assets : Int,
+  frames : Int32,
+  assets : Int32,
   integrated : LoudnessHistogram,
   short : LoudnessHistogram,
   sample_peak : Double,

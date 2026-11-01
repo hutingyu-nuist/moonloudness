@@ -24,10 +24,10 @@ fn peak_contract_abs(value : Double) -> Double {
 /// Missing input before startup and after finish is explicitly zero.
 fn peak_contract_reference(
   samples : Array[Double],
-  channels : Int,
+  channels : Int32,
   finalized : Bool,
 ) -> Double {
-  let phases : Array[Array[Int]] = [
+  let phases : Array[Array[Int32]] = [
     [14, 90, -161, 272, -487, 1125, 7964, -838, 390, -218, 122, -68],
     [-239, 240, -424, 730, -1364, 3810, 6388, -1641, 832, -477, 271, -155],
     [-155, 271, -477, 832, -1641, 6388, 3810, -1364, 730, -424, 240, -239],
@@ -69,8 +69,8 @@ fn peak_contract_reference(
 ///|
 fn peak_contract_slice(
   samples : Array[Double],
-  start : Int,
-  end : Int,
+  start : Int32,
+  end : Int32,
 ) -> Array[Double] {
   let result : Array[Double] = []
   for index in start..<end {

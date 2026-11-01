@@ -1,9 +1,9 @@
 ///|
 /// A detached point-in-time view of a streaming loudness analyzer.
 pub struct MeterSnapshot {
-  priv sample_rate : Int
-  priv frame_count : Int
-  priv sample_count : Int
+  priv sample_rate : Int32
+  priv frame_count : Int32
+  priv sample_count : Int32
   priv momentary_lufs : Double?
   priv short_term_lufs : Double?
   priv sample_peak_linear : Double
@@ -13,12 +13,12 @@ pub struct MeterSnapshot {
 
 ///|
 /// Returns the frame position represented by this snapshot.
-pub fn MeterSnapshot::sample_rate(self : MeterSnapshot) -> Int {
+pub fn MeterSnapshot::sample_rate(self : MeterSnapshot) -> Int32 {
   self.sample_rate
 }
 
 ///|
-pub fn MeterSnapshot::frame_count(self : MeterSnapshot) -> Int {
+pub fn MeterSnapshot::frame_count(self : MeterSnapshot) -> Int32 {
   self.frame_count
 }
 
@@ -28,7 +28,7 @@ pub fn MeterSnapshot::duration_seconds(self : MeterSnapshot) -> Double {
 }
 
 ///|
-pub fn MeterSnapshot::sample_count(self : MeterSnapshot) -> Int {
+pub fn MeterSnapshot::sample_count(self : MeterSnapshot) -> Int32 {
   self.sample_count
 }
 
@@ -67,14 +67,14 @@ pub fn MeterSnapshot::channel_sample_peaks_linear(
 ///|
 /// Bounded chronological history of measurements emitted by one analyzer.
 priv struct MeasurementHistory {
-  capacity : Int
+  capacity : Int32
   values : Array[MeterSnapshot]
-  mut next : Int
-  mut count : Int
+  mut next : Int32
+  mut count : Int32
 }
 
 ///|
-fn MeasurementHistory::new(capacity : Int) -> MeasurementHistory {
+fn MeasurementHistory::new(capacity : Int32) -> MeasurementHistory {
   let values : Array[MeterSnapshot] = []
   for _ in 0..<capacity {
     values.push({
@@ -118,7 +118,7 @@ fn MeasurementHistory::points(
 }
 
 ///|
-fn MeasurementHistory::last_frame_count(self : MeasurementHistory) -> Int? {
+fn MeasurementHistory::last_frame_count(self : MeasurementHistory) -> Int32? {
   if self.count == 0 {
     None
   } else {
@@ -156,7 +156,7 @@ pub fn Analyzer::history(self : Analyzer) -> Array[MeterSnapshot] {
 
 ///|
 /// Returns the configured maximum number of retained points.
-pub fn Analyzer::history_capacity(self : Analyzer) -> Int {
+pub fn Analyzer::history_capacity(self : Analyzer) -> Int32 {
   self.history.capacity
 }
 

@@ -1,6 +1,6 @@
 ///|
 /// Creates mono zero-valued PCM for exact frame-boundary tests.
-fn short_term_test_silence(frames : Int) -> Array[Double] {
+fn short_term_test_silence(frames : Int32) -> Array[Double] {
   let samples : Array[Double] = []
   for _ in 0..<frames {
     samples.push(0.0)

@@ -2,16 +2,16 @@
 /// Fixed-capacity rolling mean over finite, nonnegative frame energy.
 /// A pairwise tree is rebuilt along the replaced leaf's path on every push.
 priv struct EnergyWindow {
-  capacity : Int
-  leaf_base : Int
+  capacity : Int32
+  leaf_base : Int32
   sums : Array[Double]
-  mut cursor : Int
-  mut filled : Int
+  mut cursor : Int32
+  mut filled : Int32
 }
 
 ///|
 /// Creates an empty rolling window with a positive capacity.
-fn EnergyWindow::new(capacity : Int) -> EnergyWindow {
+fn EnergyWindow::new(capacity : Int32) -> EnergyWindow {
   let mut leaf_base = 1
   while leaf_base < capacity {
     leaf_base = leaf_base * 2

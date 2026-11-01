@@ -9,7 +9,7 @@ fn number(value : Double?) -> String {
 ///|
 // This formula is independently repeated in tools/validate_reference.py.
 // Period reduction prevents large-angle/platform-dependent phase drift.
-fn sample(id : String, frame : Int, channel : Int) -> Double {
+fn sample(id : String, frame : Int32, channel : Int32) -> Double {
   let pi = 3.141592653589793
   let phase = 2.0 * pi * (frame % 48).to_double() / 48.0
   match id {
@@ -60,7 +60,7 @@ fn sample(id : String, frame : Int, channel : Int) -> Double {
 ///|
 fn measure(
   id : String,
-  seconds : Int,
+  seconds : Int32,
   layout : @moonloudness.ChannelLayout,
 ) -> Unit {
   let config = match @moonloudness.MeterConfig::new(48000, layout) {

@@ -1,6 +1,6 @@
 ///|
 fn aggregate_meter(
-  frames : Int,
+  frames : Int32,
   amplitude : Double,
 ) -> @moonloudness.MeasurementReport {
   let analyzer = @moonloudness.Analyzer::new(

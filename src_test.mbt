@@ -1,7 +1,7 @@
 ///|
 /// Creates a deterministic sinusoid without reading external audio assets.
 fn mono_tone(
-  frames : Int,
+  frames : Int32,
   amplitude : Double,
   frequency : Double,
 ) -> Array[Double] {

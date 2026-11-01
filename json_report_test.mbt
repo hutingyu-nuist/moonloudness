@@ -26,10 +26,10 @@ test "empty JSON has a versioned explicit null schema and deterministic bytes" {
     report_json_field(first, "schema"),
     Json::string("moonloudness.measurement"),
   )
-  assert_eq(report_json_field(first, "schema_version"), (1).to_json())
-  assert_eq(report_json_field(first, "frame_count"), (0).to_json())
-  assert_eq(report_json_field(first, "sample_rate_hz"), (48000).to_json())
-  assert_eq(report_json_field(first, "duration_seconds"), 0.0.to_json())
+  assert_eq(report_json_field(first, "schema_version"), Json(1))
+  assert_eq(report_json_field(first, "frame_count"), Json(0))
+  assert_eq(report_json_field(first, "sample_rate_hz"), Json(48000))
+  assert_eq(report_json_field(first, "duration_seconds"), Json(0.0))
   assert_eq(
     report_json_field(first, "loudness"),
     Json::object({
@@ -44,7 +44,7 @@ test "empty JSON has a versioned explicit null schema and deterministic bytes" {
     Json::object({ "integrated": Json::null(), "lra": Json::null() }),
   )
   let peaks = report_json_field(first, "peaks")
-  assert_eq(report_json_field(peaks, "sample_linear"), 0.0.to_json())
+  assert_eq(report_json_field(peaks, "sample_linear"), Json(0.0))
   assert_eq(report_json_field(peaks, "sample_dbfs"), Json::null())
   assert_eq(report_json_field(peaks, "true_dbtp"), Json::null())
 }
@@ -61,14 +61,14 @@ test "JSON exposes canonical layouts and channel ordered peaks without aliasing"
     let exported_layout = report_json_field(value, "layout")
     assert_eq(
       report_json_field(exported_layout, "channel_count"),
-      layout.channels().to_json(),
+      Json(layout.channels()),
     )
     let labels = report_json_field(exported_layout, "channel_labels")
     assert_eq(
       labels,
       Json::array(
         Array::makei(layout.channels(), fn(i) {
-          layout.channel_label(i).unwrap().to_json()
+          Json(layout.channel_label(i).unwrap())
         }),
       ),
     )
@@ -82,11 +82,11 @@ test "JSON exposes canonical layouts and channel ordered peaks without aliasing"
         for index in 0..<channels.length() {
           assert_eq(
             report_json_field(channels[index], "sample_linear"),
-            report.channel_sample_peak_linear(index).unwrap().to_json(),
+            Json(report.channel_sample_peak_linear(index).unwrap()),
           )
           assert_eq(
             report_json_field(channels[index], "label"),
-            layout.channel_label(index).unwrap().to_json(),
+            Json(layout.channel_label(index).unwrap()),
           )
         }
         channels[0] = Json::null()
@@ -94,12 +94,12 @@ test "JSON exposes canonical layouts and channel ordered peaks without aliasing"
       _ => panic()
     }
     match value {
-      Object(fields) => fields.set("frame_count", (999).to_json())
+      Object(fields) => fields.set("frame_count", Json(999))
       _ => panic()
     }
     assert_eq(report.frame_count(), 1)
     assert_eq(analyzer.finish().to_json(), report.to_json())
-    assert_eq(report_json_field(report.to_json(), "frame_count"), (1).to_json())
+    assert_eq(report_json_field(report.to_json(), "frame_count"), Json(1))
     let saved = report.to_json().stringify()
     analyzer.reset()
     assert_eq(report.to_json().stringify(), saved)
@@ -115,18 +115,15 @@ test "JSON loudness and full gate trace agree with public getters" {
   let report = analyzer.finish()
   let value = report.to_json()
   assert_eq(@json.parse(value.stringify()), value)
-  assert_eq(
-    report_json_field(value, "frame_count"),
-    report.frame_count().to_json(),
-  )
+  assert_eq(report_json_field(value, "frame_count"), Json(report.frame_count()))
   let loudness = report_json_field(value, "loudness")
   assert_eq(
     report_json_field(loudness, "integrated_lufs"),
-    report.integrated_lufs().unwrap().to_json(),
+    Json(report.integrated_lufs().unwrap()),
   )
   assert_eq(
     report_json_field(loudness, "short_term_lufs"),
-    report.short_term_lufs().unwrap().to_json(),
+    Json(report.short_term_lufs().unwrap()),
   )
   let gates = report_json_field(value, "gates")
   let integrated = report_json_field(gates, "integrated")
@@ -134,12 +131,12 @@ test "JSON loudness and full gate trace agree with public getters" {
   assert_eq(
     integrated,
     Json::object({
-      "absolute_threshold_lufs": gate.absolute_threshold_lufs().to_json(),
-      "relative_threshold_lufs": gate.relative_threshold_lufs().to_json(),
-      "applied_threshold_lufs": gate.applied_threshold_lufs().to_json(),
-      "candidate_block_count": gate.candidate_block_count().to_json(),
-      "gated_block_count": gate.gated_block_count().to_json(),
-      "integrated_lufs": gate.integrated_lufs().to_json(),
+      "absolute_threshold_lufs": Json(gate.absolute_threshold_lufs()),
+      "relative_threshold_lufs": Json(gate.relative_threshold_lufs()),
+      "applied_threshold_lufs": Json(gate.applied_threshold_lufs()),
+      "candidate_block_count": Json(gate.candidate_block_count()),
+      "gated_block_count": Json(gate.gated_block_count()),
+      "integrated_lufs": Json(gate.integrated_lufs()),
     }),
   )
   let lra = report_json_field(gates, "lra")
@@ -147,15 +144,15 @@ test "JSON loudness and full gate trace agree with public getters" {
   assert_eq(
     lra,
     Json::object({
-      "absolute_threshold_lufs": range.absolute_threshold_lufs().to_json(),
-      "relative_threshold_lufs": range.relative_threshold_lufs().to_json(),
-      "applied_threshold_lufs": range.applied_threshold_lufs().to_json(),
-      "candidate_block_count": range.candidate_block_count().to_json(),
-      "gated_block_count": range.gated_block_count().to_json(),
-      "percentile_10_lufs": range.percentile_10_lufs().to_json(),
-      "percentile_95_lufs": range.percentile_95_lufs().to_json(),
-      "loudness_range_lu": range.loudness_range_lu().to_json(),
+      "absolute_threshold_lufs": Json(range.absolute_threshold_lufs()),
+      "relative_threshold_lufs": Json(range.relative_threshold_lufs()),
+      "applied_threshold_lufs": Json(range.applied_threshold_lufs()),
+      "candidate_block_count": Json(range.candidate_block_count()),
+      "gated_block_count": Json(range.gated_block_count()),
+      "percentile_10_lufs": Json(range.percentile_10_lufs()),
+      "percentile_95_lufs": Json(range.percentile_95_lufs()),
+      "loudness_range_lu": Json(range.loudness_range_lu()),
     }),
   )
-  assert_eq(report_json_field(lra, "gated_block_count"), (2).to_json())
+  assert_eq(report_json_field(lra, "gated_block_count"), Json(2))
 }

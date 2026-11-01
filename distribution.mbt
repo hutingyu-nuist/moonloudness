@@ -8,7 +8,7 @@ priv struct LoudnessHistogram {
   counts : Array[Double]
   energy_sums : Array[Double]
   mut total_count : Double
-  mut above_range_count : Int
+  mut above_range_count : Int32
 }
 
 ///|
@@ -21,7 +21,7 @@ const HISTOGRAM_MAX_LUFS : Double = 24.0
 
 ///|
 /// Number of quantization buckets per loudness unit.
-const HISTOGRAM_BUCKETS_PER_LU : Int = 100
+const HISTOGRAM_BUCKETS_PER_LU : Int32 = 100
 
 ///|
 /// Creates fixed-size arrays for the declared range and resolution.
@@ -43,7 +43,7 @@ fn LoudnessHistogram::new() -> LoudnessHistogram {
 fn LoudnessHistogram::bucket_for_energy(
   self : LoudnessHistogram,
   energy : Double,
-) -> Int {
+) -> Int32 {
   let lufs = energy_to_lufs(energy)
   let scaled = (lufs - HISTOGRAM_MIN_LUFS) *
     HISTOGRAM_BUCKETS_PER_LU.to_double()
@@ -77,7 +77,7 @@ fn LoudnessHistogram::push_energy(
 fn LoudnessHistogram::first_bucket_at_or_above(
   self : LoudnessHistogram,
   threshold_lufs : Double,
-) -> Int {
+) -> Int32 {
   let scaled = (threshold_lufs - HISTOGRAM_MIN_LUFS) *
     HISTOGRAM_BUCKETS_PER_LU.to_double()
   if scaled < 0.0 {
@@ -138,7 +138,7 @@ fn LoudnessHistogram::count_at_or_above(
 fn LoudnessHistogram::percentile_at_or_above(
   self : LoudnessHistogram,
   threshold_lufs : Double,
-  percentile : Int,
+  percentile : Int32,
 ) -> Double? {
   let start = self.first_bucket_at_or_above(threshold_lufs)
   let count = self.count_at_or_above(threshold_lufs)

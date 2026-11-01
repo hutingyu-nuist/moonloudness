@@ -1,5 +1,5 @@
 ///|
-fn contract_history_meter(capacity : Int) -> @moonloudness.Analyzer {
+fn contract_history_meter(capacity : Int32) -> @moonloudness.Analyzer {
   @moonloudness.Analyzer::new_with_history_capacity(
     @moonloudness.MeterConfig::new(48000, @moonloudness.ChannelLayout::stereo()).unwrap(),
     capacity,
@@ -7,7 +7,7 @@ fn contract_history_meter(capacity : Int) -> @moonloudness.Analyzer {
 }
 
 ///|
-fn history_frames(analyzer : @moonloudness.Analyzer) -> Array[Int] {
+fn history_frames(analyzer : @moonloudness.Analyzer) -> Array[Int32] {
   analyzer.history().map(fn(point) { point.frame_count() })
 }
 

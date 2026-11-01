@@ -10,8 +10,8 @@ pub struct MeasurementReport {
   priv sample_peak_linear : Double
   priv channel_sample_peaks_linear : Array[Double]
   priv true_peak_linear : Double
-  priv frame_count : Int
-  priv sample_rate : Int
+  priv frame_count : Int32
+  priv sample_rate : Int32
   priv integrated_distribution : LoudnessHistogram
   priv short_distribution : LoudnessHistogram
 }
@@ -66,7 +66,7 @@ pub fn MeasurementReport::channel_sample_peaks_linear(
 /// Returns one channel's peak or None when the channel index is invalid.
 pub fn MeasurementReport::channel_sample_peak_linear(
   self : MeasurementReport,
-  channel : Int,
+  channel : Int32,
 ) -> Double? {
   if channel < 0 || channel >= self.channel_sample_peaks_linear.length() {
     None
@@ -83,12 +83,12 @@ pub fn MeasurementReport::true_peak_linear(self : MeasurementReport) -> Double {
 
 ///|
 /// Returns the count of complete input frames accepted by the analyzer.
-pub fn MeasurementReport::frame_count(self : MeasurementReport) -> Int {
+pub fn MeasurementReport::frame_count(self : MeasurementReport) -> Int32 {
   self.frame_count
 }
 
 ///|
-pub fn MeasurementReport::sample_rate(self : MeasurementReport) -> Int {
+pub fn MeasurementReport::sample_rate(self : MeasurementReport) -> Int32 {
   self.sample_rate
 }
 

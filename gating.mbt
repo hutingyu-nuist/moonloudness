@@ -4,8 +4,8 @@ pub struct IntegratedGateReport {
   priv absolute_threshold_lufs : Double
   priv relative_threshold_lufs : Double
   priv applied_threshold_lufs : Double
-  priv candidate_block_count : Int
-  priv gated_block_count : Int
+  priv candidate_block_count : Int32
+  priv gated_block_count : Int32
   priv integrated_lufs : Double
 }
 
@@ -33,14 +33,14 @@ pub fn IntegratedGateReport::applied_threshold_lufs(
 ///|
 pub fn IntegratedGateReport::candidate_block_count(
   self : IntegratedGateReport,
-) -> Int {
+) -> Int32 {
   self.candidate_block_count
 }
 
 ///|
 pub fn IntegratedGateReport::gated_block_count(
   self : IntegratedGateReport,
-) -> Int {
+) -> Int32 {
   self.gated_block_count
 }
 
@@ -57,8 +57,8 @@ pub struct LraGateReport {
   priv absolute_threshold_lufs : Double
   priv relative_threshold_lufs : Double
   priv applied_threshold_lufs : Double
-  priv candidate_block_count : Int
-  priv gated_block_count : Int
+  priv candidate_block_count : Int32
+  priv gated_block_count : Int32
   priv percentile_10_lufs : Double
   priv percentile_95_lufs : Double
   priv loudness_range_lu : Double
@@ -80,12 +80,12 @@ pub fn LraGateReport::applied_threshold_lufs(self : LraGateReport) -> Double {
 }
 
 ///|
-pub fn LraGateReport::candidate_block_count(self : LraGateReport) -> Int {
+pub fn LraGateReport::candidate_block_count(self : LraGateReport) -> Int32 {
   self.candidate_block_count
 }
 
 ///|
-pub fn LraGateReport::gated_block_count(self : LraGateReport) -> Int {
+pub fn LraGateReport::gated_block_count(self : LraGateReport) -> Int32 {
   self.gated_block_count
 }
 

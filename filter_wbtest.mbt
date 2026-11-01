@@ -4,7 +4,7 @@
 fn filter_reference_impulse(
   b : Array[Double],
   a : Array[Double],
-  frames : Int,
+  frames : Int32,
 ) -> Array[Double] {
   let response : Array[Double] = []
   for frame in 0..<frames {

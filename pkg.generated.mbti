@@ -13,9 +13,9 @@ import {
 pub struct AggregateReport {
   // private fields
 }
-pub fn AggregateReport::asset_count(Self) -> Int
+pub fn AggregateReport::asset_count(Self) -> Int32
 pub fn AggregateReport::duration_seconds(Self) -> Double
-pub fn AggregateReport::frame_count(Self) -> Int
+pub fn AggregateReport::frame_count(Self) -> Int32
 pub fn AggregateReport::integrated_gate(Self) -> IntegratedGateReport?
 pub fn AggregateReport::integrated_lufs(Self) -> Double?
 pub fn AggregateReport::integrated_status(Self) -> GateStatus
@@ -25,13 +25,13 @@ pub fn AggregateReport::lra_status(Self) -> GateStatus
 pub fn AggregateReport::normalization_plan(Self, Double, Double) -> Result[NormalizationPlan, NormalizationPlanError]
 pub fn AggregateReport::sample_peak_dbfs(Self) -> Double?
 pub fn AggregateReport::sample_peak_linear(Self) -> Double
-pub fn AggregateReport::sample_rate(Self) -> Int
+pub fn AggregateReport::sample_rate(Self) -> Int32
 pub fn AggregateReport::true_peak_dbtp(Self) -> Double?
 pub fn AggregateReport::true_peak_linear(Self) -> Double
 
 pub enum AggregationError {
-  UnsupportedAggregateSampleRate(Int)
-  ReportSampleRateMismatch(Int, Int)
+  UnsupportedAggregateSampleRate(Int32)
+  ReportSampleRateMismatch(Int32, Int32)
   AggregateCounterOverflow
   InvalidAggregateCounters
   InvalidAggregateDistribution
@@ -41,23 +41,23 @@ pub enum AggregationError {
 pub struct Analyzer {
   // private fields
 }
-pub fn Analyzer::channel_sample_peak_linear(Self, Int) -> Double?
+pub fn Analyzer::channel_sample_peak_linear(Self, Int32) -> Double?
 pub fn Analyzer::channel_sample_peaks_linear(Self) -> Array[Double]
 pub fn Analyzer::clear_history(Self) -> Unit
 pub fn Analyzer::duration_seconds(Self) -> Double
 pub fn Analyzer::finish(Self) -> MeasurementReport
-pub fn Analyzer::frame_count(Self) -> Int
+pub fn Analyzer::frame_count(Self) -> Int32
 pub fn Analyzer::history(Self) -> Array[MeterSnapshot]
-pub fn Analyzer::history_capacity(Self) -> Int
+pub fn Analyzer::history_capacity(Self) -> Int32
 pub fn Analyzer::integrated_status(Self) -> GateStatus
 pub fn Analyzer::lra_status(Self) -> GateStatus
 pub fn Analyzer::momentary_lufs(Self) -> Double?
 pub fn Analyzer::new(MeterConfig) -> Self
-pub fn Analyzer::new_with_history_capacity(MeterConfig, Int) -> Result[Self, MeterError]
+pub fn Analyzer::new_with_history_capacity(MeterConfig, Int32) -> Result[Self, MeterError]
 pub fn Analyzer::push(Self, Array[Double]) -> Result[Unit, MeterError]
 pub fn Analyzer::push_view(Self, ArrayView[Double]) -> Result[Unit, MeterError]
 pub fn Analyzer::reset(Self) -> Unit
-pub fn Analyzer::sample_count(Self) -> Int
+pub fn Analyzer::sample_count(Self) -> Int32
 pub fn Analyzer::sample_peak_linear(Self) -> Double
 pub fn Analyzer::short_term_lufs(Self) -> Double?
 pub fn Analyzer::snapshot(Self) -> MeterSnapshot
@@ -68,11 +68,11 @@ pub enum ChannelLayout {
   Stereo
   FivePointZero
 }
-pub fn ChannelLayout::channel_label(Self, Int) -> String?
-pub fn ChannelLayout::channel_weight(Self, Int) -> Double?
-pub fn ChannelLayout::channels(Self) -> Int
+pub fn ChannelLayout::channel_label(Self, Int32) -> String?
+pub fn ChannelLayout::channel_weight(Self, Int32) -> Double?
+pub fn ChannelLayout::channels(Self) -> Int32
 pub fn ChannelLayout::five_point_zero() -> Self
-pub fn ChannelLayout::index_of(Self, String) -> Int?
+pub fn ChannelLayout::index_of(Self, String) -> Int32?
 pub fn ChannelLayout::mono() -> Self
 pub fn ChannelLayout::stereo() -> Self
 pub fn ChannelLayout::supported() -> Array[Self]
@@ -80,7 +80,7 @@ pub fn ChannelLayout::supported() -> Array[Self]
 pub enum GateStatus {
   WarmingUp
   BelowAbsoluteGate
-  HistogramRangeExceeded(Int)
+  HistogramRangeExceeded(Int32)
   Available
 } derive(Eq, @debug.Debug)
 pub fn GateStatus::equal(Self, Self) -> Bool
@@ -92,8 +92,8 @@ pub struct IntegratedGateReport {
 }
 pub fn IntegratedGateReport::absolute_threshold_lufs(Self) -> Double
 pub fn IntegratedGateReport::applied_threshold_lufs(Self) -> Double
-pub fn IntegratedGateReport::candidate_block_count(Self) -> Int
-pub fn IntegratedGateReport::gated_block_count(Self) -> Int
+pub fn IntegratedGateReport::candidate_block_count(Self) -> Int32
+pub fn IntegratedGateReport::gated_block_count(Self) -> Int32
 pub fn IntegratedGateReport::integrated_lufs(Self) -> Double
 pub fn IntegratedGateReport::relative_threshold_lufs(Self) -> Double
 
@@ -101,22 +101,22 @@ pub struct LoudnessAggregator {
   // private fields
 }
 pub fn LoudnessAggregator::add(Self, MeasurementReport) -> Result[Unit, AggregationError]
-pub fn LoudnessAggregator::asset_count(Self) -> Int
+pub fn LoudnessAggregator::asset_count(Self) -> Int32
 pub fn LoudnessAggregator::finish(Self) -> AggregateReport
-pub fn LoudnessAggregator::frame_count(Self) -> Int
+pub fn LoudnessAggregator::frame_count(Self) -> Int32
 pub fn LoudnessAggregator::integrated_status(Self) -> GateStatus
 pub fn LoudnessAggregator::lra_status(Self) -> GateStatus
 pub fn LoudnessAggregator::merge(Self, Self) -> Result[Unit, AggregationError]
-pub fn LoudnessAggregator::new(Int) -> Result[Self, AggregationError]
-pub fn LoudnessAggregator::sample_rate(Self) -> Int
+pub fn LoudnessAggregator::new(Int32) -> Result[Self, AggregationError]
+pub fn LoudnessAggregator::sample_rate(Self) -> Int32
 
 pub struct LraGateReport {
   // private fields
 }
 pub fn LraGateReport::absolute_threshold_lufs(Self) -> Double
 pub fn LraGateReport::applied_threshold_lufs(Self) -> Double
-pub fn LraGateReport::candidate_block_count(Self) -> Int
-pub fn LraGateReport::gated_block_count(Self) -> Int
+pub fn LraGateReport::candidate_block_count(Self) -> Int32
+pub fn LraGateReport::gated_block_count(Self) -> Int32
 pub fn LraGateReport::loudness_range_lu(Self) -> Double
 pub fn LraGateReport::percentile_10_lufs(Self) -> Double
 pub fn LraGateReport::percentile_95_lufs(Self) -> Double
@@ -125,10 +125,10 @@ pub fn LraGateReport::relative_threshold_lufs(Self) -> Double
 pub struct MeasurementReport {
   // private fields
 }
-pub fn MeasurementReport::channel_sample_peak_linear(Self, Int) -> Double?
+pub fn MeasurementReport::channel_sample_peak_linear(Self, Int32) -> Double?
 pub fn MeasurementReport::channel_sample_peaks_linear(Self) -> Array[Double]
 pub fn MeasurementReport::duration_seconds(Self) -> Double
-pub fn MeasurementReport::frame_count(Self) -> Int
+pub fn MeasurementReport::frame_count(Self) -> Int32
 pub fn MeasurementReport::integrated_gate(Self) -> IntegratedGateReport?
 pub fn MeasurementReport::integrated_lufs(Self) -> Double?
 pub fn MeasurementReport::integrated_status(Self) -> GateStatus
@@ -139,7 +139,7 @@ pub fn MeasurementReport::momentary_lufs(Self) -> Double?
 pub fn MeasurementReport::normalization_plan(Self, Double, Double) -> Result[NormalizationPlan, NormalizationPlanError]
 pub fn MeasurementReport::sample_peak_dbfs(Self) -> Double?
 pub fn MeasurementReport::sample_peak_linear(Self) -> Double
-pub fn MeasurementReport::sample_rate(Self) -> Int
+pub fn MeasurementReport::sample_rate(Self) -> Int32
 pub fn MeasurementReport::short_term_lufs(Self) -> Double?
 pub fn MeasurementReport::to_json(Self) -> Json
 pub fn MeasurementReport::true_peak_dbtp(Self) -> Double?
@@ -149,16 +149,16 @@ pub struct MeterConfig {
   // private fields
 }
 pub fn MeterConfig::layout(Self) -> ChannelLayout
-pub fn MeterConfig::new(Int, ChannelLayout) -> Result[Self, MeterError]
-pub fn MeterConfig::sample_rate(Self) -> Int
+pub fn MeterConfig::new(Int32, ChannelLayout) -> Result[Self, MeterError]
+pub fn MeterConfig::sample_rate(Self) -> Int32
 
 pub enum MeterError {
-  UnsupportedSampleRate(Int)
-  IncompleteFrame(Int, Int)
+  UnsupportedSampleRate(Int32)
+  IncompleteFrame(Int32, Int32)
   NonFiniteSample
   SampleMagnitudeTooLarge(Double)
   CounterOverflow
-  InvalidHistoryCapacity(Int)
+  InvalidHistoryCapacity(Int32)
   AnalyzerFinished
 }
 
@@ -167,12 +167,12 @@ pub struct MeterSnapshot {
 }
 pub fn MeterSnapshot::channel_sample_peaks_linear(Self) -> Array[Double]
 pub fn MeterSnapshot::duration_seconds(Self) -> Double
-pub fn MeterSnapshot::frame_count(Self) -> Int
+pub fn MeterSnapshot::frame_count(Self) -> Int32
 pub fn MeterSnapshot::momentary_lufs(Self) -> Double?
-pub fn MeterSnapshot::sample_count(Self) -> Int
+pub fn MeterSnapshot::sample_count(Self) -> Int32
 pub fn MeterSnapshot::sample_peak_dbfs(Self) -> Double?
 pub fn MeterSnapshot::sample_peak_linear(Self) -> Double
-pub fn MeterSnapshot::sample_rate(Self) -> Int
+pub fn MeterSnapshot::sample_rate(Self) -> Int32
 pub fn MeterSnapshot::short_term_lufs(Self) -> Double?
 pub fn MeterSnapshot::true_peak_dbtp(Self) -> Double?
 pub fn MeterSnapshot::true_peak_linear(Self) -> Double

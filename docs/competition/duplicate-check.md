@@ -89,3 +89,16 @@ Terminfo 与 Cap’n Proto 分属不同问题域；它们只作为候选淘汰�
 - 延续检查 MoonSpectrum、hwlxmm/dsp、moondsp、MoonEcho、moon-certified、MoonPost 的实际能力，未将其中频谱、DSP 基元、音效或质检流程误作不存在。永久注册表全部 reserved/completed 项目继续保留，包括 MoonCite、MoonPhone；本轮不重新登记本项目指纹或改换选题。
 
 结论：**在已记录检索范围内未发现成熟直接替代**。保留现有项目与历史；MoonVoice、MoonCast 属高度相邻项目，后续版本仍需持续关注。详细检索证据与本地验收记录保存在仓库外，未上传私人申报书。
+
+
+## 2026-11-01 验收补充：MoonMel 实质邻接复核
+
+按实际 `moon search` 查询 loudness、ebur128、r128、bs1770、true-peak、LUFS（各 limit 100），并读取 MoonCakes 返回的包信息及 GitHub 固定树的 README、公开接口、实现和测试。新发现 `1zhouhaoran1/moonmel@0.1.6`（https://github.com/1zhouhaoran1/MoonMel），审阅树 SHA `b49eb6d239ae148a9782f4495332090bc1ee727c`，MIT，版权 2026 zhr。未复制其代码。
+
+MoonMel 的 `src/features/loudness` 确有 K 加权、Integrated、LRA、momentary/short-term maxima 和四倍重采样真峰值。其 `loudness_meter(AudioBuffer)` 接收完整单声道缓冲区，为滤波、窗口功率与重采样分配完整数组；`BiquadFilter` 本身支持逐样本有状态处理。已读取系数、正弦与静音三个真实测试。不能将其描述为“只有 MFCC”或“没有响度/真峰值”。
+
+MoonLoudness 的主流程是固定 48 kHz 的 mono/stereo/5.0 交错 PCM 增量测量，以有界窗口、直方图和历史存储处理长流，提供 push/finish/reset、预热和量程不可用状态、报告所有权及版本化 JSON；另可合并独立节目的门控分布，供媒体质检、实时仪表和编辑复测系统复用。MoonMel 当前所审 API、实现和测试未提供这一完整流程；差异不是改名或多一个指标。它是高度相邻的离线音频特征库，应在采用它已能满足的离线场景中优先复用既有能力。
+
+本次复核 MoonVoice 当前提交 `f0ecc993d0775612b4cfb8e8e329d242c246b213`、MoonCast `b026bdac056b931e8c10fd708335d5974d2dc154`。保留此前对 MoonVoice 离线响度和 MoonCast FFmpeg 两遍 loudnorm 的实质邻接认定。mizchi/audio-mpt 本次 GitHub 查询返回 404，不作为不存在的证据；此前公开 audio@0.1.1 的检查仍按原日期保留。永久注册表的 reserved/completed 项目继续保留，不以本轮查询覆盖历史。
+
+因此结论仍严格限定为：**在已记录检索范围内未发现成熟直接替代**。检索具有日期、范围、权限和公开可见性限制，不能据此断言生态中绝对不存在类似实现。本次日期为 2026-11-01，晚于记录的 2026-10-30 24:00 截止时间，不声称这些补充在截止前完成。

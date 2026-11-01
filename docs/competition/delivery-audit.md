@@ -70,3 +70,12 @@ This dated supplement does not overwrite the October 14 measurements or pretend 
 - Conservative production count: 1,598 substantive non-test MoonBit lines across 11 files, excluding comments/blanks/tests/examples/generated files. Historical 24 nonempty distinct commits were manually reviewed as at least 20 meaningful steps; the new repair is independently meaningful, without empty commits or rewritten history.
 - New measured batch run: 32 audio seconds / 1,536,000 frames, five fresh-process launches per portable backend; wasm-gc median 0.582874 seconds on Windows (20 logical CPUs). Includes PCM generation, analysis, aggregation, JSON, startup/JIT and capture, excludes compilation. Concurrent background workload and uncontrolled scheduling limit comparison; no regression/speedup is inferred against October 14's 0.432908 seconds.
 - The original private 0.1.1 application remains unchanged outside this repository. The current 0.1.2 application and full REVIEW evidence remain private local artifacts. No application, contact or credential is bundled. Release/registry/CI status is verified independently against the eventual exact public commit; packaging success alone does not establish delivery.
+
+
+## 2026-11-01 — 0.1.3 验收修复
+
+用户新指南要求 moonc >=0.10.16。旧 CI 固定 0.10.14，不满足该门槛；实际升级编译器后，旧树在 --deny-warn 下暴露 primitive to_json 弃用错误。已将这类构造改为 Json(value)，保持 Report.to_json 和 JSON 数据契约；CI 的编译器及 core 同时固定 0.10.16+b1a0e846e，并用工具脚本检查 moonc 行的最低版本。该脚本对真实旧编译器返回失败、对真实合规编译器返回成功。
+
+新 formatter 将 Int 规范化为 Int32，归一比较公开 .mbti 后没有增删签名。三个本地可移植后端各完成严格检查、release 构建、debug/release 76 项测试及五例运行；Python 32 项测试与 FFmpeg 独立 60 项比较通过。native 严格检查本地通过；Windows 新 runtime 明确要求 MSVC，本机 MinGW 无法执行其 native 编译，后续以精确提交的 Ubuntu CI 核验。未修改 runtime 或禁用警告。
+
+新增 MoonMel 邻接检查见 duplicate-check.md，保留全部原始判断与历史。此次为截止日后的维护验收，不回填截止前完成日期。私有申报书保留在仓库外，不作为需要再次提交的官方表格。同步状态由仓库外本轮验收报告记录，只有精确提交 CI、Release 和公开 MoonCakes 消费者验证完成才判定 delivery 通过。

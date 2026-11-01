@@ -10,8 +10,8 @@ fn review_lifecycle_meter(
 
 ///|
 fn review_lifecycle_signal(
-  frames : Int,
-  channels : Int,
+  frames : Int32,
+  channels : Int32,
   amplitude : Double,
 ) -> Array[Double] {
   Array::makei(frames * channels, fn(i) {

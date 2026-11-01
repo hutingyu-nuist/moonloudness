@@ -3,7 +3,7 @@
 pub enum GateStatus {
   WarmingUp
   BelowAbsoluteGate
-  HistogramRangeExceeded(Int)
+  HistogramRangeExceeded(Int32)
   Available
 } derive(Eq, Debug)
 
@@ -83,6 +83,6 @@ fn GateStatus::as_json(self : GateStatus) -> Json {
   }
   Json::object({
     "status": Json::string(name),
-    "above_range_blocks": count.to_json(),
+    "above_range_blocks": Json(count),
   })
 }

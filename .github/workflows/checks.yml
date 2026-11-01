@@ -32,11 +32,11 @@ jobs:
       - name: Set up pinned MoonBit compiler and core
         uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76 # v1
         with:
-          version: '0.10.14+7d59c7ec9'
-          core-version: '0.10.14+7d59c7ec9'
+          version: '0.10.16+b1a0e846e'
+          core-version: '0.10.16+b1a0e846e'
       - name: Show toolchain and native compiler
         run: |
-          moon version --all
+          python3 tools/check_toolchain.py
           cc --version
       - name: Validate generated interfaces and formatting
         run: |
@@ -55,6 +55,7 @@ jobs:
           moon run examples/stereo --target ${{ matrix.target }}
           moon run examples/surround --target ${{ matrix.target }}
           moon run examples/batch --target ${{ matrix.target }}
+          moon run examples/reference --target ${{ matrix.target }}
 
   independent-reference:
     runs-on: ubuntu-24.04
@@ -67,8 +68,10 @@ jobs:
           fetch-depth: 0
       - uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76
         with:
-          version: '0.10.14+7d59c7ec9'
-          core-version: '0.10.14+7d59c7ec9'
+          version: '0.10.16+b1a0e846e'
+          core-version: '0.10.16+b1a0e846e'
+      - name: Enforce acceptance compiler minimum
+        run: python3 tools/check_toolchain.py
       - name: Install independent test tool
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Validate controllers, repository audit and independent PCM measurements
